@@ -1,0 +1,46 @@
+/* General Chat Page Styles */
+.chat-page {
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .chat-list-container,
+  .message-area-container {
+    padding: 0;
+    overflow-y: auto;
+    border-right: 1px solid #ddd;
+  }
+  
+  /* Desktop and Tablet View */
+  @media (min-width: 768px) {
+    .chat-list-container {
+      display: block;
+      border-right: 1px solid #ddd;
+    }
+  }
+  
+  /* Mobile View */
+  @media (max-width: 767px) {
+    .chat-page {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .chat-list-container {
+      height: 40vh;
+      border-bottom: 1px solid #ddd;
+    }
+  
+    .message-area-container {
+      height: 60vh;
+    }
+  
+    /* Show back button on mobile view */
+    .back-button {
+      display: inline-block;
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+  
