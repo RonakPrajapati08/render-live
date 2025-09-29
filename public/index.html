@@ -27,13 +27,24 @@
 
 
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/Chat-App/serviceworker.js')
-          .then((reg) => console.log('Success: ', reg.scope))
-          .catch((err) => console.log('Failure: ', err));
-      })
+    // if ('serviceWorker' in navigator) {
+    //   window.addEventListener('load', () => {
+    //     navigator.serviceWorker.register('/Chat-App/serviceworker.js')
+    //       .then((reg) => console.log('Success: ', reg.scope))
+    //       .catch((err) => console.log('Failure: ', err));
+    //   })
+    // }
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", async () => {
+        try {
+          await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+          console.log("Service Worker registered successfully.");
+        } catch (err) {
+          console.error("Service Worker registration failed:", err);
+        }
+      });
     }
+
   </script>
 
 

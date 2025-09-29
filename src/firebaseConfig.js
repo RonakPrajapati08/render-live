@@ -408,15 +408,45 @@ const updateUserStatus = async (userId, status) => {
 };
 
 // Function to request push notification permission and get the FCM token
+// const requestNotificationPermission = async () => {
+//   if ("serviceWorker" in navigator && messaging) {
+//     try {
+//       const token = await getToken(messaging, {
+//         vapidKey:
+//           "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
+//       });
+//       if (token) {
+//         console.log("Notification Token:", token);
+//         await setDoc(
+//           doc(db, "users", auth.currentUser.uid),
+//           { fcmToken: token },
+//           { merge: true }
+//         );
+//       }
+//     } catch (error) {
+//       console.error("Error getting notification token:", error);
+//     }
+//   } else {
+//     console.warn("Push notifications are not supported on this browser.");
+//   }
+// };
+
 const requestNotificationPermission = async () => {
+  const permission = await Notification.requestPermission();
+  if (permission !== "granted") {
+    console.warn("Notification permission not granted.");
+    return;
+  }
+
   if ("serviceWorker" in navigator && messaging) {
     try {
       const token = await getToken(messaging, {
         vapidKey:
-          "BKSGTotW4YVLXEvvbkGDpLaQhWnw-_vd75zprPpxXlwu7Bj02o7L2b_574rqLIepAhChL8Ty4p8TEnyrdzO8rkA",
+          "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
       });
       if (token) {
-        console.log("Notification Token:", token);
+        console.log("FCM token:", token);
+
         await setDoc(
           doc(db, "users", auth.currentUser.uid),
           { fcmToken: token },
@@ -424,10 +454,8 @@ const requestNotificationPermission = async () => {
         );
       }
     } catch (error) {
-      console.error("Error getting notification token:", error);
+      console.error("Error getting FCM token:", error);
     }
-  } else {
-    console.warn("Push notifications are not supported on this browser.");
   }
 };
 

@@ -832,60 +832,6 @@ const MessageArea = ({
     localStorage.removeItem("selectedUser"); // Remove it so it's reset when user goes
   };
 
-  // useEffect(() => {
-  //   // Request notification permission when component mounts
-  //   // if (auth.currentUser) {
-  //   //   requestNotificationPermission(); // Request notification permission
-  //   // }
-
-  //   const handleBeforeUnload = (event) => {
-  //     event.preventDefault();
-  //     event.returnValue = ""; // Prevent page refresh
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, [selectedUser]);
-
-  // useEffect(() => {
-  //   if (!selectedUser || !auth.currentUser) return;
-
-  //   const q = query(collection(db, "chats"), orderBy("timestamp"));
-
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     setMessages(
-  //       snapshot.docs
-  //         .map((doc) => ({ id: doc.id, ...doc.data() }))
-  //         .filter(
-  //           (msg) =>
-  //             (msg.senderId === auth.currentUser?.uid &&
-  //               msg.userId === selectedUser.id) ||
-  //             (msg.senderId === selectedUser.id &&
-  //               msg.userId === auth.currentUser?.uid)
-  //         )
-  //     );
-  //   });
-
-  //   const typingStatusRef = doc(
-  //     db,
-  //     "typingStatus",
-  //     `${selectedUser.id}_${auth.currentUser?.uid}`
-  //   );
-  //   const unsubscribeTyping = onSnapshot(typingStatusRef, (docSnap) => {
-  //     if (docSnap.exists()) {
-  //       setOtherUserTyping(docSnap.data().isTyping);
-  //     }
-  //   });
-
-  //   return () => {
-  //     unsubscribe();
-  //     unsubscribeTyping();
-  //   };
-  // }, [selectedUser]);
-
   //(18/12/2024)
   useEffect(() => {
     if (!selectedUser || !auth.currentUser) return;
@@ -1008,7 +954,7 @@ const MessageArea = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `BKSGTotW4YVLXEvvbkGDpLaQhWnw-_vd75zprPpxXlwu7Bj02o7L2b_574rqLIepAhChL8Ty4p8TEnyrdzO8rkA`, // Replace with your Firebase server key
+          Authorization: `BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg`, // Replace with your Firebase server key
         },
         body: JSON.stringify(payload),
       });
