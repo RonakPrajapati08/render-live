@@ -1157,14 +1157,6 @@ const MessageArea = ({
         </Dropdown>
       </div>
 
-      {/* // <button
-          //   style={{ fontSize: "10px" }}
-          //   className=""
-          //   onClick={() => deleteMessage(msg.id)}
-          // >
-          //   Delete
-          // </button> */}
-
       <div className="messages">
         {messages.map((msg, index) => (
           <div
@@ -1174,8 +1166,18 @@ const MessageArea = ({
             }`}
           >
             <div className="d-flex align-items-baseline">
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center flex-row flex-wrap justify-content-end">
                 <p className="msg-marg">{msg.text}</p>
+                {/* <span className="text-dark">{msg.timestamp}</span> */}
+                <span className="text-dark ms-2" style={{ fontSize: "12px" }}>
+                  {msg.timestamp?.toDate
+                    ? msg.timestamp.toDate().toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : ""}
+                </span>
+
                 <p className="mb-0">
                   {msg.edited && (
                     <span
@@ -1221,18 +1223,12 @@ const MessageArea = ({
         ))}
         <div ref={messagesEndRef} />
         {otherUserTyping && (
-          // <div className="typing-indicator">
-          //   <span> The other user is typing...</span>
-          //   <div className="typing-dots">
-          //     <span></span>
-          //     <span></span>
-          //     <span></span>
-          //   </div>
-          // </div>
-          <div className="typing-bubble mb-2">
-            <span className="dot"></span>
-            <span className="dot"></span>
-            <span className="dot"></span>
+          <div class="d-flex align-items-center mb-2">
+            <div class="typing-bubble bg-light rounded-pill px-1 py-1">
+              <span class="dot bg-secondary rounded-circle mx-1"></span>
+              <span class="dot bg-secondary rounded-circle mx-1"></span>
+              <span class="dot bg-secondary rounded-circle mx-1"></span>
+            </div>
           </div>
         )}
       </div>
@@ -1256,14 +1252,14 @@ const MessageArea = ({
               style={{ padding: "10px 12px 7px" }}
               onClick={saveEditedMessage}
             >
-              <i class="fa-solid fa-check fs-5"></i>
+              <i className="fa-solid fa-check fs-5"></i>
             </button>
             <button
               className="bg-danger"
               style={{ padding: "10px 12px 7px" }}
               onClick={cancelEditing}
             >
-              <i class="fa-solid fa-xmark fs-5 "></i>
+              <i className="fa-solid fa-xmark fs-5 "></i>
             </button>
           </div>
         ) : (
@@ -1671,14 +1667,14 @@ export default MessageArea;
 //               style={{ padding: "10px 12px 7px" }}
 //               onClick={saveEditedMessage}
 //             >
-//               <i class="fa-solid fa-check fs-5"></i>
+//               <i className="fa-solid fa-check fs-5"></i>
 //             </button>
 //             <button
 //               className="bg-danger"
 //               style={{ padding: "10px 12px 7px" }}
 //               onClick={cancelEditing}
 //             >
-//               <i class="fa-solid fa-xmark fs-5 "></i>
+//               <i className="fa-solid fa-xmark fs-5 "></i>
 //             </button>
 //           </div>
 //         ) : (
@@ -2215,14 +2211,14 @@ export default MessageArea;
 //               style={{ padding: "10px 12px 7px" }}
 //               onClick={saveEditedMessage}
 //             >
-//               <i class="fa-solid fa-check fs-5"></i>
+//               <i className="fa-solid fa-check fs-5"></i>
 //             </button>
 //             <button
 //               className="bg-danger"
 //               style={{ padding: "10px 12px 7px" }}
 //               onClick={cancelEditing}
 //             >
-//               <i class="fa-solid fa-xmark fs-5 "></i>
+//               <i className="fa-solid fa-xmark fs-5 "></i>
 //             </button>
 //           </div>
 //         ) : (
