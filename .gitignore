@@ -24,3 +24,4 @@ yarn-error.log*
 
 #file
 firebaseConfig.js
+server/functions/serviceAccountKey.json
