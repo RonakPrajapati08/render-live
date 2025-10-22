@@ -1,1509 +1,4 @@
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig"; // Firebase Auth and Firestore
-// import { collection, onSnapshot } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const navigate = useNavigate(); // React Router v6 hook for navigation
-
-//   useEffect(() => {
-//     // Listen for changes in the 'users' collection
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline); // Filter for users who are online
-
-//       setUsers(onlineUsers);
-//     });
-
-//     return () => unsubscribe();
-//   }, []);
-
-//   // Logout function
-//   const logout = () => {
-//     auth
-//       .signOut()
-//       .then(() => {
-//         // After logging out, redirect to login page (root path)
-//         navigate("/", { replace: true }); // Using { replace: true } to prevent going back
-//       })
-//       .catch((error) => {
-//         console.error("Error during logout:", error);
-//       });
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <h2>Chats</h2>
-//       {users.map((user) => (
-//         <div
-//           key={user.id}
-//           onClick={() => setSelectedUser(user)}
-//           className="chat-item"
-//         >
-//           <div className="chat-item-info">
-//             <p>{user.name || "Unknown User"}</p>
-//             <p>{user.lastMessage || "No messages yet"}</p>
-//           </div>
-//           <span
-//             className={`status ${user.isOnline ? "online" : "offline"}`}
-//           ></span>
-//         </div>
-//       ))}
-//       <button className="logout-btn" onClick={logout}>
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
 // export default ChatList;
-
-//This code is Talk to yourself is available feature
-
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import { collection, onSnapshot } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline);
-
-//       setUsers(onlineUsers);
-//     });
-
-//     return () => unsubscribe();
-//   }, []);
-
-//   const logout = () => {
-//     auth
-//       .signOut()
-//       .then(() => {
-//         navigate("/", { replace: true });
-//       })
-//       .catch((error) => {
-//         console.error("Error during logout:", error);
-//       });
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <h2>Chats</h2>
-//       {users.map((user) => (
-//         <div
-//           key={user.id}
-//           onClick={() => setSelectedUser(user)}
-//           className="chat-item"
-//         >
-//           <div className="chat-item-info">
-//             <p>{user.name || "Unknown User"}</p>
-//             <p>{user.lastMessage || "No messages yet"}</p>
-//           </div>
-//           <span
-//             className={`status ${user.isOnline ? "online" : "offline"}`}
-//           ></span>
-//         </div>
-//       ))}
-//       <button className="logout-btn" onClick={logout}>
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-//this code is talk yourself not available
-
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     // Fetch the current user data
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     // Subscribe to the "users" collection to show online users
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//     });
-
-//     return () => unsubscribe();
-//   }, []);
-
-//   const logout = () => {
-//     auth
-//       .signOut()
-//       .then(() => {
-//         navigate("/", { replace: true });
-//       })
-//       .catch((error) => {
-//         console.error("Error during logout:", error);
-//       });
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <h3 className="fw-bold">Chats</h3>
-
-//         {/* Display the current user's profile at the top */}
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {/* Display online users */}
-//       {users.map((user) => (
-//         <div
-//           key={user.id}
-//           onClick={() => setSelectedUser(user)}
-//           className="chat-item"
-//         >
-//           <div className="chat-item-info">
-//             <p>{user.name || "Unknown User"}</p>
-//             <p>{user.lastMessage || "No messages yet"}</p>
-//           </div>
-//           <span
-//             className={`status ${user.isOnline ? "online" : "offline"}`}
-//           ></span>
-//         </div>
-//       ))}
-
-//       <button
-//         className="logout-btn position-absolute bottom-0"
-//         onClick={logout}
-//       >
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-///Test Perpose code WIth login
-
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     // Fetch the current user data
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     // Subscribe to the "users" collection to show online users
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//     });
-
-//     return () => unsubscribe();
-//   }, []);
-
-//   const logout = () => {
-//     auth
-//       .signOut()
-//       .then(() => {
-//         navigate("/", { replace: true });
-//       })
-//       .catch((error) => {
-//         console.error("Error during logout:", error);
-//       });
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <h3 className="fw-bold">Chats</h3>
-
-//         {/* Display the current user's profile at the top */}
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {/* Display online users */}
-//       {users.map((user) => (
-//         <div
-//           key={user.id}
-//           onClick={() => setSelectedUser(user)}
-//           className="chat-item"
-//         >
-//           <div className="chat-item-info">
-//             <p>{user.name || "Unknown User"}</p>
-//             <p>{user.lastMessage || "No messages yet"}</p>
-//           </div>
-//           <span
-//             className={`status ${user.isOnline ? "online" : "offline"}`}
-//           ></span>
-//         </div>
-//       ))}
-
-//       <button
-//         className="logout-btn position-absolute bottom-0"
-//         onClick={logout}
-//       >
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import {
-//   collection,
-//   onSnapshot,
-//   doc,
-//   getDoc,
-//   query,
-//   orderBy,
-//   limit,
-//   where,
-// } from "firebase/firestore"; // Import where here
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const [lastMessages, setLastMessages] = useState({}); // Store last messages for each user
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     // Fetch the current user data
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     // Subscribe to the "users" collection to show online users
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//       fetchLastMessages(onlineUsers); // Fetch last messages when users are updated
-//     });
-
-//     return () => unsubscribe();
-//   }, []);
-
-//   // Fetch the last message for each user
-//   const fetchLastMessages = (onlineUsers) => {
-//     onlineUsers.forEach((user) => {
-//       const q = query(
-//         collection(db, "chats"),
-//         orderBy("timestamp", "desc"),
-//         limit(1),
-//         where("userId", "in", [auth.currentUser.uid, user.id]),
-//         where("senderId", "in", [auth.currentUser.uid, user.id])
-//       );
-
-//       onSnapshot(q, (snapshot) => {
-//         const lastMessage = snapshot.docs[0]?.data()?.text || "No messages yet";
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: lastMessage,
-//         }));
-//       });
-//     });
-//   };
-
-//   const logout = () => {
-//     auth
-//       .signOut()
-//       .then(() => {
-//         navigate("/", { replace: true });
-//       })
-//       .catch((error) => {
-//         console.error("Error during logout:", error);
-//       });
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <h3 className="fw-bold">Chats</h3>
-
-//         {/* Display the current user's profile at the top */}
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {/* Display online users */}
-//       {users.map((user) => (
-//         <div
-//           key={user.id}
-//           onClick={() => setSelectedUser(user)}
-//           className="chat-item"
-//         >
-//           <div className="chat-item-info">
-//             <p>{user.name || "Unknown User"}</p>
-//             <p>{lastMessages[user.id] || "No messages yet"}</p>
-//           </div>
-//           <span
-//             className={`status ${user.isOnline ? "online" : "offline"}`}
-//           ></span>
-//         </div>
-//       ))}
-
-//       <button
-//         className="logout-btn position-absolute bottom-0"
-//         onClick={logout}
-//       >
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-// ChatList.js
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import {
-//   collection,
-//   onSnapshot,
-//   doc,
-//   getDoc,
-//   getDocs,
-//   query,
-//   orderBy,
-//   limit,
-//   where,
-//   updateDoc,
-// } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const [lastMessages, setLastMessages] = useState({});
-//   const navigate = useNavigate();
-
-//   // Function to update the user's online status
-//   const updateUserStatus = async (status) => {
-//     const currentUser = auth.currentUser;
-//     if (currentUser) {
-//       try {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         await updateDoc(userDocRef, { isOnline: status });
-//       } catch (error) {
-//         console.error("Error updating user status:", error);
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     // Fetch current user data and update the user status
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//         await updateUserStatus(true); // Set online when logged in
-//       } else {
-//         console.log("No user is currently logged in.");
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     // Subscribe to the "users" collection to show online users
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//       fetchLastMessages(onlineUsers);
-//     });
-
-//     // Set up listener for changes in authentication state
-//     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-//       if (user) {
-//         updateUserStatus(true);
-//         fetchCurrentUser();
-//       } else {
-//         setCurrentUserData(null);
-//         navigate("/login"); // Redirect to login if logged out
-//       }
-//     });
-
-//     return () => {
-//       unsubscribe();
-//       unsubscribeAuth();
-//     };
-//   }, [navigate]);
-
-//   // Fetch the last message for each user
-//   const fetchLastMessages = async (onlineUsers) => {
-//     for (const user of onlineUsers) {
-//       const q = query(
-//         collection(db, "chats"),
-//         where("userId", "in", [auth.currentUser.uid, user.id]),
-//         orderBy("timestamp", "desc"),
-//         limit(1)
-//       );
-
-//       const querySnapshot = await getDocs(q);
-//       if (!querySnapshot.empty) {
-//         const lastMessage = querySnapshot.docs[0].data().text;
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: lastMessage,
-//         }));
-//       } else {
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: "No messages yet",
-//         }));
-//       }
-//     }
-
-//     const qRealTime = query(
-//       collection(db, "chats"),
-//       where("userId", "in", [auth.currentUser.uid]),
-//       orderBy("timestamp", "desc")
-//     );
-
-//     onSnapshot(qRealTime, (snapshot) => {
-//       snapshot.docs.forEach((doc) => {
-//         const { userId, text } = doc.data();
-//         if (userId !== auth.currentUser.uid) {
-//           setLastMessages((prevMessages) => ({
-//             ...prevMessages,
-//             [userId]: text,
-//           }));
-//         }
-//       });
-//     });
-//   };
-
-//   const logout = async () => {
-//     try {
-//       // Update user status to offline before signing out
-//       await updateUserStatus(false);
-//       await auth.signOut();
-//       navigate("/", { replace: true });
-//     } catch (error) {
-//       console.error("Error during logout:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <h3 className="fw-bold">Chats</h3>
-
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {users.map((user) => (
-//         <div
-//           key={user.id}
-//           onClick={() => setSelectedUser(user)}
-//           className="chat-item"
-//         >
-//           <div className="chat-item-info">
-//             <p>{user.name || "Unknown User"}</p>
-//             <p>{lastMessages[user.id] || "No messages yet"}</p>
-//           </div>
-//           <span
-//             className={`status ${user.isOnline ? "online" : "offline"}`}
-//             style={{
-//               width: "12px",
-//               height: "12px",
-//               borderRadius: "50%",
-//               backgroundColor: user.isOnline ? "green" : "red",
-//             }}
-//           ></span>
-//         </div>
-//       ))}
-
-//       <button
-//         className="logout-btn position-absolute bottom-0"
-//         onClick={logout}
-//       >
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-//This is Updated Code This Error: Cannot read properties of null (reading 'uid') Solve.
-
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import {
-//   collection,
-//   onSnapshot,
-//   doc,
-//   getDoc,
-//   getDocs,
-//   query,
-//   orderBy,
-//   limit,
-//   where,
-//   updateDoc,
-// } from "firebase/firestore";
-// import Col from "react-bootstrap/Col";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const [lastMessages, setLastMessages] = useState({});
-//   const navigate = useNavigate();
-
-//   const updateUserStatus = async (status) => {
-//     const currentUser = auth.currentUser;
-//     if (currentUser) {
-//       try {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         await updateDoc(userDocRef, { isOnline: status });
-//       } catch (error) {
-//         console.error("Error updating user status:", error);
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//         await updateUserStatus(true);
-//       } else {
-//         console.log("No user is currently logged in.");
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//       if (auth.currentUser) fetchLastMessages(onlineUsers);
-//     });
-
-//     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-//       if (user) {
-//         updateUserStatus(true);
-//         fetchCurrentUser();
-//       } else {
-//         setCurrentUserData(null);
-//         navigate("/login");
-//       }
-//     });
-
-//     return () => {
-//       unsubscribe();
-//       unsubscribeAuth();
-//     };
-//   }, [navigate]);
-
-//   const fetchLastMessages = async (onlineUsers) => {
-//     const currentUser = auth.currentUser;
-//     if (!currentUser) return; // Exit if currentUser is null
-
-//     for (const user of onlineUsers) {
-//       const q = query(
-//         collection(db, "chats"),
-//         where("userId", "in", [currentUser.uid, user.id]),
-//         orderBy("timestamp", "desc"),
-//         limit(1)
-//       );
-
-//       const querySnapshot = await getDocs(q);
-//       if (!querySnapshot.empty) {
-//         const lastMessage = querySnapshot.docs[0].data().text;
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: lastMessage,
-//         }));
-//       } else {
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: "No messages yet",
-//         }));
-//       }
-//     }
-
-//     const qRealTime = query(
-//       collection(db, "chats"),
-//       where("userId", "in", [currentUser.uid]),
-//       orderBy("timestamp", "desc")
-//     );
-
-//     onSnapshot(qRealTime, (snapshot) => {
-//       snapshot.docs.forEach((doc) => {
-//         const { userId, text } = doc.data();
-//         if (userId !== currentUser.uid) {
-//           setLastMessages((prevMessages) => ({
-//             ...prevMessages,
-//             [userId]: text,
-//           }));
-//         }
-//       });
-//     });
-//   };
-
-//   const logout = async () => {
-//     try {
-//       await updateUserStatus(false);
-//       await auth.signOut();
-//       navigate("/", { replace: true });
-//     } catch (error) {
-//       console.error("Error during logout:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <Col xs={6} md={4}>
-//           <h3 className="fw-bold">Whatsapp</h3>
-//         </Col>
-
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <img
-//               src={
-//                 localStorage.getItem("profileImage") || "/default-profile.jpg"
-//               }
-//               alt="Profile"
-//               style={{
-//                 width: "40px",
-//                 height: "40px",
-//                 borderRadius: "50%",
-//                 objectFit: "cover",
-//                 marginRight: "8px",
-//               }}
-//             />
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {users.map((user) => {
-//         const userImage = localStorage.getItem(`profileImage_${user.id}`);
-//         return (
-//           <div
-//             key={user.id}
-//             onClick={() => setSelectedUser(user)}
-//             className="chat-item"
-//           >
-//             <div className="chat-item-info">
-//               <p>{user.name || "Unknown User"}</p>
-//               <p>{lastMessages[user.id] || "No messages yet"}</p>
-//             </div>
-//             <span
-//               className={`status ${user.isOnline ? "online" : "offline"}`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 backgroundColor: user.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <img
-//               src={userImage || "/default-profile.jpg"}
-//               alt="User Profile"
-//               style={{
-//                 width: "40px",
-//                 height: "40px",
-//                 borderRadius: "50%",
-//                 objectFit: "cover",
-//                 marginLeft: "8px",
-//               }}
-//             />
-//           </div>
-//         );
-//       })}
-
-//       <button
-//         className="logout-btn log-out position-absolute px-3 rounded-3 text-bg-danger"
-//         onClick={logout}
-//       >
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-//user profile uploaded image localstorage get (13/12/2024)
-
-// Importing necessary dependencies and Firebase configurations
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import {
-//   collection,
-//   onSnapshot,
-//   doc,
-//   getDoc,
-//   getDocs,
-//   query,
-//   orderBy,
-//   limit,
-//   where,
-//   updateDoc,
-//   addDoc,
-// } from "firebase/firestore";
-// import Dropdown from "react-bootstrap/Dropdown";
-// import Modal from "react-bootstrap/Modal";
-// import Button from "react-bootstrap/Button";
-// import Form from "react-bootstrap/Form";
-// import Col from "react-bootstrap/Col";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const [lastMessages, setLastMessages] = useState({});
-//   const [showGroupModal, setShowGroupModal] = useState(false);
-//   const [groupName, setGroupName] = useState("");
-//   const [selectedParticipants, setSelectedParticipants] = useState([]);
-//   const navigate = useNavigate();
-
-//   const updateUserStatus = async (status) => {
-//     const currentUser = auth.currentUser;
-//     if (currentUser) {
-//       try {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         await updateDoc(userDocRef, { isOnline: status });
-//       } catch (error) {
-//         console.error("Error updating user status:", error);
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//         await updateUserStatus(true);
-//       } else {
-//         console.log("No user is currently logged in.");
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//       if (auth.currentUser) fetchLastMessages(onlineUsers);
-//     });
-
-//     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-//       if (user) {
-//         updateUserStatus(true);
-//         fetchCurrentUser();
-//       } else {
-//         setCurrentUserData(null);
-//         navigate("/login");
-//       }
-//     });
-
-//     return () => {
-//       unsubscribe();
-//       unsubscribeAuth();
-//     };
-//   }, [navigate]);
-
-//   const fetchLastMessages = async (onlineUsers) => {
-//     const currentUser = auth.currentUser;
-//     if (!currentUser) return;
-
-//     for (const user of onlineUsers) {
-//       const q = query(
-//         collection(db, "chats"),
-//         where("userId", "in", [currentUser.uid, user.id]),
-//         orderBy("timestamp", "desc"),
-//         limit(1)
-//       );
-
-//       const querySnapshot = await getDocs(q);
-//       if (!querySnapshot.empty) {
-//         const lastMessage = querySnapshot.docs[0].data().text;
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: lastMessage,
-//         }));
-//       } else {
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: "No messages yet",
-//         }));
-//       }
-//     }
-//   };
-
-//   const createGroup = async () => {
-//     if (!groupName || selectedParticipants.length === 0) {
-//       alert("Please provide a group name and select participants.");
-//       return;
-//     }
-
-//     try {
-//       const groupData = {
-//         name: groupName,
-//         participants: [auth.currentUser.uid, ...selectedParticipants],
-//         createdAt: new Date(),
-//         // NEW: Add additional fields to group data
-//         createdBy: auth.currentUser.uid, // Track the creator of the group
-//         participantCount: selectedParticipants.length + 1, // Including the creator
-//       };
-
-//       await addDoc(collection(db, "groups"), groupData);
-
-//       // Clear inputs after creation
-//       setShowGroupModal(false);
-//       setGroupName("");
-//       setSelectedParticipants([]);
-//       alert("Group created successfully!");
-//     } catch (error) {
-//       console.error("Error creating group:", error);
-//     }
-//   };
-
-//   // NEW: Utility function to clear modal state
-//   const clearGroupModal = () => {
-//     setGroupName("");
-//     setSelectedParticipants([]);
-//     setShowGroupModal(false);
-//   };
-
-//   const logout = async () => {
-//     try {
-//       await updateUserStatus(false);
-//       await auth.signOut();
-//       navigate("/", { replace: true });
-//     } catch (error) {
-//       console.error("Error during logout:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <Col xs={6} md={4}>
-//           <h3 className="fw-bold">Whatsapp</h3>
-//         </Col>
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <img
-//               src={
-//                 localStorage.getItem("profileImage") || "/default-profile.jpg"
-//               }
-//               alt="Profile"
-//               style={{
-//                 width: "40px",
-//                 height: "40px",
-//                 borderRadius: "50%",
-//                 objectFit: "cover",
-//                 marginRight: "8px",
-//               }}
-//             />
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-
-//             <Dropdown align="end">
-//               <Dropdown.Toggle
-//                 variant="button"
-//                 bsPrefix="p-2"
-//                 id="dropdown-basic"
-//                 className="text-black fw-bold fs-5"
-//               >
-//                 &#8942;
-//               </Dropdown.Toggle>
-
-//               <Dropdown.Menu>
-//                 <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
-//                 <Dropdown.Item onClick={() => setShowGroupModal(true)}>
-//                   Create Group
-//                 </Dropdown.Item>
-//               </Dropdown.Menu>
-//             </Dropdown>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {users.map((user) => {
-//         const userImage = localStorage.getItem(`profileImage_${user.id}`);
-//         return (
-//           <div
-//             key={user.id}
-//             onClick={() => setSelectedUser(user)}
-//             className="chat-item rounded-3 mb-2"
-//           >
-//             <div className="chat-item-info">
-//               <p>{user.name || "Unknown User"}</p>
-//               <p>{lastMessages[user.id] || "No messages yet"}</p>
-//             </div>
-//             <span
-//               className={`status ${user.isOnline ? "online" : "offline"}`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 backgroundColor: user.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <img
-//               src={userImage || "/default-profile.jpg"}
-//               alt="User Profile"
-//               style={{
-//                 width: "40px",
-//                 height: "40px",
-//                 borderRadius: "50%",
-//                 objectFit: "cover",
-//                 marginLeft: "8px",
-//               }}
-//             />
-//           </div>
-//         );
-//       })}
-
-//       <Modal show={showGroupModal} onHide={clearGroupModal}>
-//         <Modal.Header closeButton>
-//           <Modal.Title>Create Group</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           <Form>
-//             <Form.Group className="mb-3">
-//               <Form.Label>Group Name</Form.Label>
-//               <Form.Control
-//                 type="text"
-//                 placeholder="Enter group name"
-//                 value={groupName}
-//                 onChange={(e) => setGroupName(e.target.value)}
-//               />
-//             </Form.Group>
-//             <Form.Group className="mb-3">
-//               <Form.Label>Select Participants</Form.Label>
-//               {users.map((user) => (
-//                 <Form.Check
-//                   key={user.id}
-//                   type="checkbox"
-//                   label={user.name}
-//                   value={user.id}
-//                   onChange={(e) => {
-//                     const checked = e.target.checked;
-//                     setSelectedParticipants((prev) =>
-//                       checked
-//                         ? [...prev, user.id]
-//                         : prev.filter((id) => id !== user.id)
-//                     );
-//                   }}
-//                 />
-//               ))}
-//             </Form.Group>
-//           </Form>
-//         </Modal.Body>
-//         <Modal.Footer>
-//           <Button variant="secondary" onClick={clearGroupModal}>
-//             Cancel
-//           </Button>
-//           <Button variant="primary" onClick={createGroup}>
-//             Create Group
-//           </Button>
-//         </Modal.Footer>
-//       </Modal>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-//user profile use email first latter not uploaded image localstorage get (13/12/2024) Updated.
-
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import {
-//   collection,
-//   onSnapshot,
-//   doc,
-//   getDoc,
-//   getDocs,
-//   query,
-//   orderBy,
-//   limit,
-//   where,
-//   updateDoc,
-//   addDoc,
-// } from "firebase/firestore";
-// import Dropdown from "react-bootstrap/Dropdown";
-// import Modal from "react-bootstrap/Modal";
-// import Button from "react-bootstrap/Button";
-// import Form from "react-bootstrap/Form";
-// import Col from "react-bootstrap/Col";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const [lastMessages, setLastMessages] = useState({});
-//   const [showGroupModal, setShowGroupModal] = useState(false);
-//   const [groupName, setGroupName] = useState("");
-//   const [selectedParticipants, setSelectedParticipants] = useState([]);
-//   const navigate = useNavigate();
-
-//   const updateUserStatus = async (status) => {
-//     const currentUser = auth.currentUser;
-//     if (currentUser) {
-//       try {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         await updateDoc(userDocRef, { isOnline: status });
-//       } catch (error) {
-//         console.error("Error updating user status:", error);
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//         await updateUserStatus(true);
-//       } else {
-//         console.log("No user is currently logged in.");
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//       if (auth.currentUser) fetchLastMessages(onlineUsers);
-//     });
-
-//     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-//       if (user) {
-//         updateUserStatus(true);
-//         fetchCurrentUser();
-//       } else {
-//         setCurrentUserData(null);
-//         navigate("/login");
-//       }
-//     });
-
-//     return () => {
-//       unsubscribe();
-//       unsubscribeAuth();
-//     };
-//   }, [navigate]);
-
-//   const fetchLastMessages = async (onlineUsers) => {
-//     const currentUser = auth.currentUser;
-//     if (!currentUser) return;
-
-//     for (const user of onlineUsers) {
-//       const q = query(
-//         collection(db, "chats"),
-//         where("userId", "in", [currentUser.uid, user.id]),
-//         orderBy("timestamp", "desc"),
-//         limit(1)
-//       );
-
-//       const querySnapshot = await getDocs(q);
-//       if (!querySnapshot.empty) {
-//         const lastMessage = querySnapshot.docs[0].data().text;
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: lastMessage,
-//         }));
-//       } else {
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: "No messages yet",
-//         }));
-//       }
-//     }
-//   };
-
-//   const createGroup = async () => {
-//     if (!groupName || selectedParticipants.length === 0) {
-//       alert("Please provide a group name and select participants.");
-//       return;
-//     }
-
-//     try {
-//       const groupData = {
-//         name: groupName,
-//         participants: [auth.currentUser.uid, ...selectedParticipants],
-//         createdAt: new Date(),
-//         createdBy: auth.currentUser.uid,
-//         participantCount: selectedParticipants.length + 1,
-//       };
-
-//       await addDoc(collection(db, "groups"), groupData);
-
-//       // Clear inputs after creation
-//       setShowGroupModal(false);
-//       setGroupName("");
-//       setSelectedParticipants([]);
-//       alert("Group created successfully!");
-//     } catch (error) {
-//       console.error("Error creating group:", error);
-//     }
-//   };
-
-//   const logout = async () => {
-//     try {
-//       await updateUserStatus(false);
-//       await auth.signOut();
-//       navigate("/", { replace: true });
-//     } catch (error) {
-//       console.error("Error during logout:", error);
-//     }
-//   };
-
-//   // Function to generate the user's profile image with initials and background color
-//   const getUserProfileImage = (email) => {
-//     const firstLetter = email.charAt(0).toUpperCase();
-//     // const randomColor = "#" + Math.floor(Math.random()*16777215).toString(16); // Random background color
-//     return (
-//       <div
-//         style={{
-//           display: "flex",
-//           justifyContent: "center",
-//           alignItems: "center",
-//           width: "40px",
-//           height: "40px",
-//           borderRadius: "50%",
-//           backgroundColor: "rgb(224, 231, 255, 1)",
-//           color: "#4f46e5",
-//           fontWeight: "bold",
-//         }}
-//       >
-//         {firstLetter}
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <Col xs={6} md={4}>
-//           <h3 className="fw-bold">Whatsapp</h3>
-//         </Col>
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <div style={{ marginRight: "8px" }}>
-//               {getUserProfileImage(currentUserData.email)}{" "}
-//               {/* Display profile image */}
-//             </div>
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-
-//             <Dropdown align="end">
-//               <Dropdown.Toggle
-//                 variant="button"
-//                 bsPrefix="p-2"
-//                 id="dropdown-basic"
-//                 className="text-black fw-bold fs-5"
-//               >
-//                 &#8942;
-//               </Dropdown.Toggle>
-
-//               <Dropdown.Menu>
-//                 <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
-//                 <Dropdown.Item onClick={() => setShowGroupModal(true)}>
-//                   Create Group
-//                 </Dropdown.Item>
-//               </Dropdown.Menu>
-//             </Dropdown>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {users.map((user) => {
-//         return (
-//           <div
-//             key={user.id}
-//             onClick={() => setSelectedUser(user)}
-//             className="chat-item rounded-3 mb-2"
-//           >
-//             <div className="chat-item-info d-flex gap-2 align-items-center">
-//               <div style={{ marginLeft: "8px" }}>
-//                 {getUserProfileImage(user.email)} {/* Display profile image */}
-//               </div>
-
-//               <div>
-//                 <p className="mb-0 fw-semibold" style={{ fontSize: "18px" }}>
-//                   {user.name || "Unknown User"}
-//                 </p>
-//                 <p>{lastMessages[user.id] || "No messages yet"}</p>
-//               </div>
-//             </div>
-//             <span
-//               className={`status ${user.isOnline ? "online" : "offline"}`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 backgroundColor: user.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//           </div>
-//         );
-//       })}
-
-//       <Modal show={showGroupModal} onHide={() => setShowGroupModal(false)}>
-//         <Modal.Header closeButton>
-//           <Modal.Title>Create Group</Modal.Title>
-//         </Modal.Header>
-//         <Modal.Body>
-//           <Form>
-//             <Form.Group className="mb-3">
-//               <Form.Label>Group Name</Form.Label>
-//               <Form.Control
-//                 type="text"
-//                 placeholder="Enter group name"
-//                 value={groupName}
-//                 onChange={(e) => setGroupName(e.target.value)}
-//               />
-//             </Form.Group>
-//             <Form.Group className="mb-3">
-//               <Form.Label>Select Participants</Form.Label>
-//               {users.map((user) => (
-//                 <Form.Check
-//                   key={user.id}
-//                   type="checkbox"
-//                   label={user.name}
-//                   value={user.id}
-//                   onChange={(e) => {
-//                     const checked = e.target.checked;
-//                     setSelectedParticipants((prev) =>
-//                       checked
-//                         ? [...prev, user.id]
-//                         : prev.filter((id) => id !== user.id)
-//                     );
-//                   }}
-//                 />
-//               ))}
-//             </Form.Group>
-//           </Form>
-//         </Modal.Body>
-//         <Modal.Footer>
-//           <Button variant="secondary" onClick={() => setShowGroupModal(false)}>
-//             Cancel
-//           </Button>
-//           <Button variant="primary" onClick={createGroup}>
-//             Create Group
-//           </Button>
-//         </Modal.Footer>
-//       </Modal>
-//     </div>
-//   );
-// };
-
-// export default ChatList;
-
-//User last message time show (16/12/2024) Updated code
-
 import React, { useState, useEffect } from "react";
 import { db, auth } from "../firebaseConfig";
 import {
@@ -1519,80 +14,146 @@ import {
   updateDoc,
   addDoc,
 } from "firebase/firestore";
-import {
-  Dropdown,
-  Modal,
-  Button,
-  Form,
-  Col,
-  // InputGroup,
-} from "react-bootstrap";
+import { Dropdown, Modal, Button, Form, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
-  const [users, setUsers] = useState([]); // Stores the list of online users
-  const [currentUserData, setCurrentUserData] = useState(null); // Stores current user data
-  const [lastMessages, setLastMessages] = useState({}); // Stores last message data (text + timestamp)
-  const [showGroupModal, setShowGroupModal] = useState(false); // Modal state for creating groups
-  const [groupName, setGroupName] = useState(""); // Group name input state
-  const [selectedParticipants, setSelectedParticipants] = useState([]); // Selected participants for group
+const ChatList = ({ setSelectedUser }) => {
+  const [users, setUsers] = useState([]);
+  const [currentUserData, setCurrentUserData] = useState(null);
+  const [lastMessages, setLastMessages] = useState({});
   const [unreadCounts, setUnreadCounts] = useState({});
-  const [searchTerm, setSearchTerm] = useState(""); // ✅ New state for search input
-
+  const [showGroupModal, setShowGroupModal] = useState(false);
+  const [groupName, setGroupName] = useState("");
+  const [selectedParticipants, setSelectedParticipants] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  // Helper function to update the user's online status
-  const updateUserStatus = async (status) => {
-    const currentUser = auth.currentUser;
-    if (currentUser) {
-      try {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        await updateDoc(userDocRef, { isOnline: status });
-      } catch (error) {
-        console.error("Error updating user status:", error);
-      }
-    }
+  // Safe helper for profile image
+  const getUserProfileImage = (email) => {
+    const firstLetter = email?.charAt(0).toUpperCase() || "?";
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "40px",
+          height: "40px",
+          borderRadius: "50%",
+          backgroundColor: "rgb(224, 231, 255, 1)",
+          color: "#4f46e5",
+          fontWeight: "bold",
+        }}
+      >
+        {firstLetter}
+      </div>
+    );
   };
 
-  // Fetch current user data and set online status
+  const updateUserStatus = async (status) => {
+    if (!auth.currentUser) return;
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(userRef, { isOnline: status });
+  };
+
+  // Fetch current user and all online users
+  // useEffect(() => {
+  //   const fetchCurrentUser = async (user) => {
+  //     // Fetch only if we actually have a user from Firebase
+  //     if (!user) return;
+  //     const userRef = doc(db, "users", user.uid);
+  //     const userSnap = await getDoc(userRef);
+  //     if (userSnap.exists()) {
+  //       setCurrentUserData({ id: user.uid, ...userSnap.data() });
+  //       await updateUserStatus(true);
+  //     }
+  //   };
+
+  //   // ✅ run fetch only after Firebase confirms user login
+  //   const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       fetchCurrentUser(user); // 🔥 now always runs at the right time
+  //     } else {
+  //       navigate("/");
+  //     }
+  //   });
+
+  //   // listen to all users
+  //   const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+  //     const allUsers = snapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+
+  //     const onlineUsers = allUsers.filter(
+  //       (u) => u.isOnline && u.id !== auth.currentUser?.uid
+  //     );
+  //     setUsers(onlineUsers);
+
+  //     if (auth.currentUser) fetchLastMessages(onlineUsers);
+  //   });
+
+  //   return () => {
+  //     unsubscribe();
+  //     unsubscribeAuth();
+  //   };
+  // }, [navigate]);
+
+  //new code
   useEffect(() => {
-    const fetchCurrentUser = async () => {
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-        }
+    const fetchCurrentUser = async (firebaseUser) => {
+      if (!firebaseUser) return;
+
+      const userRef = doc(db, "users", firebaseUser.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          name: userSnap.data().name || firebaseUser.displayName || "User",
+          photoURL: userSnap.data().photoURL || firebaseUser.photoURL || null,
+          isOnline: true,
+        };
+
+        setCurrentUserData(userData);
         await updateUserStatus(true);
-      } else {
-        console.log("No user is currently logged in.");
+
+        // 🧠 Save Firestore user data, not Auth object
+        localStorage.setItem("currentUserData", JSON.stringify(userData));
       }
     };
 
-    fetchCurrentUser();
+    // ✅ Instantly load cached user (if exists)
+    const savedUser = localStorage.getItem("currentUserData");
+    if (savedUser) {
+      setCurrentUserData(JSON.parse(savedUser));
+    }
 
-    // Subscribe to online users and fetch their last messages
-    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-      const onlineUsers = snapshot.docs
-        .map((doc) => ({ id: doc.id, ...doc.data() }))
-        .filter((user) => user.isOnline && user.id !== auth.currentUser?.uid);
-
-      setUsers(onlineUsers);
-
-      // Fetch last messages for online users
-      if (auth.currentUser) fetchLastMessages(onlineUsers);
-    });
-
-    // Subscribe to auth state changes
+    // ✅ Listen to auth state changes
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
       if (user) {
-        updateUserStatus(true);
-        fetchCurrentUser();
+        fetchCurrentUser(user);
       } else {
-        setCurrentUserData(null);
-        navigate("/login");
+        localStorage.removeItem("currentUserData"); // 🧹 clear on logout
+        navigate("/");
       }
+    });
+
+    // ✅ Listen to all users for real-time updates
+    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+      const allUsers = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const currentUid = auth.currentUser?.uid;
+      const onlineUsers = allUsers.filter(
+        (u) => u.isOnline && u.id !== currentUid
+      );
+      setUsers(onlineUsers);
+
+      if (currentUid) fetchLastMessages(onlineUsers);
     });
 
     return () => {
@@ -1601,138 +162,144 @@ const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
     };
   }, [navigate]);
 
-  // Fetch the last message for each user, including the timestamp
   const fetchLastMessages = async (onlineUsers) => {
-    const currentUser = auth.currentUser;
-    if (!currentUser) return;
-
+    if (!auth.currentUser) return;
     for (const user of onlineUsers) {
       const q = query(
         collection(db, "chats"),
-        where("userId", "in", [currentUser.uid, user.id]),
+        where("participants", "array-contains", auth.currentUser.uid),
         orderBy("timestamp", "desc"),
         limit(1)
       );
-
       const querySnapshot = await getDocs(q);
       if (!querySnapshot.empty) {
         const lastMessageDoc = querySnapshot.docs[0].data();
-        setLastMessages((prevMessages) => ({
-          ...prevMessages,
+        setLastMessages((prev) => ({
+          ...prev,
           [user.id]: {
             text: lastMessageDoc.text || "No message",
-            timestamp: lastMessageDoc.timestamp?.toDate() || null, // Store timestamp
+            timestamp: lastMessageDoc.timestamp?.toDate() || null,
           },
         }));
-
-        // Count unread messages for the current user (18/12/2024)
-        const unreadMessagesQuery = query(
+        const unreadQuery = query(
           collection(db, "chats"),
-          where("userId", "==", currentUser.uid),
+          where("userId", "==", auth.currentUser.uid),
           where("senderId", "==", user.id),
           where("isRead", "==", false)
         );
-        const unreadSnapshot = await getDocs(unreadMessagesQuery);
-        setUnreadCounts((prevCounts) => ({
-          ...prevCounts,
-          [user.id]: unreadSnapshot.size, // Update unread message count
+        const unreadSnapshot = await getDocs(unreadQuery);
+        setUnreadCounts((prev) => ({
+          ...prev,
+          [user.id]: unreadSnapshot.size,
         }));
       } else {
-        setLastMessages((prevMessages) => ({
-          ...prevMessages,
+        setLastMessages((prev) => ({
+          ...prev,
           [user.id]: { text: "No messages yet", timestamp: null },
         }));
       }
     }
   };
 
-  // const fetchLastMessages = async (onlineUsers) => {
-  //   const currentUser = auth.currentUser;
-  //   if (!currentUser) return;
+  // ----------------------
+  // LIVE UNREAD COUNT LISTENER
+  // ----------------------
+  // useEffect(() => {
+  //   if (!auth.currentUser) return;
 
-  //   let messagesData = {}; // Store messages separately
+  //   const unsubscribe = onSnapshot(collection(db, "chats"), (snapshot) => {
+  //     const newCounts = {};
 
-  //   for (const user of onlineUsers) {
-  //     // ✅ Create a unique conversation ID (sorted to ensure consistency)
-  //     const conversationId =
-  //       currentUser.uid < user.id
-  //         ? [currentUser.uid, user.id]
-  //         : [user.id, currentUser.uid];
+  //     snapshot.docChanges().forEach((change) => {
+  //       if (change.type === "added" || change.type === "modified") {
+  //         const msg = change.doc.data();
+  //         // Count unread messages only for current user
+  //         if (msg.userId === auth.currentUser.uid && !msg.isRead) {
+  //           newCounts[msg.senderId] = (newCounts[msg.senderId] || 0) + 1;
+  //         }
+  //       }
+  //     });
 
-  //     // ✅ Fetch the last message between the specific two users
-  //     const q = query(
-  //       collection(db, "chats"),
-  //       where("participants", "array-contains-any", [currentUser.uid, user.id]), // ✅ Fetch messages between these users
-  //       orderBy("timestamp", "desc"),
-  //       limit(1)
-  //     );
+  //     setUnreadCounts((prev) => ({ ...prev, ...newCounts }));
+  //   });
 
-  //     const querySnapshot = await getDocs(q);
+  //   return () => unsubscribe();
+  // }, []);
+  useEffect(() => {
+    if (!auth.currentUser) return;
 
-  //     if (!querySnapshot.empty) {
-  //       const lastMessageDoc = querySnapshot.docs[0].data();
-  //       messagesData[user.id] = {
-  //         text: lastMessageDoc.text || "No message",
-  //         timestamp: lastMessageDoc.timestamp?.toDate() || null,
-  //       };
-  //     } else {
-  //       // ✅ If no messages exist, set default value
-  //       messagesData[user.id] = { text: "No messages yet", timestamp: null };
-  //     }
-  //   }
+    const unsubscribe = onSnapshot(collection(db, "chats"), (snapshot) => {
+      const counts = {};
 
-  //   // ✅ Update last messages for all users properly
-  //   setLastMessages(messagesData);
-  // };
+      snapshot.docs.forEach((doc) => {
+        const msg = doc.data();
+        if (msg.userId === auth.currentUser.uid && !msg.isRead) {
+          counts[msg.senderId] = (counts[msg.senderId] || 0) + 1;
+        }
+      });
 
-  // Format the timestamp for display
-  const formatTimestamp = (timestamp) => {
-    if (!timestamp) return ""; // Return empty string if no timestamp
-    const date = new Date(timestamp);
-    const options = { hour: "2-digit", minute: "2-digit" }; // Format: HH:MM AM/PM
-    return date.toLocaleTimeString([], options);
+      setUnreadCounts(counts); // update unread counts live
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // ----------------------
+  // OPEN CHAT AND RESET UNREAD
+  // ----------------------
+  const openChat = async (user) => {
+    setSelectedUser(user);
+
+    // Reset unread messages for this chat in Firestore
+    const unreadQuery = query(
+      collection(db, "chats"),
+      where("senderId", "==", user.id),
+      where("userId", "==", auth.currentUser.uid),
+      where("isRead", "==", false)
+    );
+
+    const unreadSnapshot = await getDocs(unreadQuery);
+    unreadSnapshot.forEach(async (docSnap) => {
+      await updateDoc(doc(db, "chats", docSnap.id), { isRead: true });
+    });
+
+    // Reset local unread count immediately
+    setUnreadCounts((prev) => ({ ...prev, [user.id]: 0 }));
   };
 
-  // Handle group creation
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return "";
+    return new Date(timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   const createGroup = async () => {
     if (!groupName || selectedParticipants.length === 0) {
-      alert("Please provide a group name and select participants.");
+      alert("Provide a group name and select participants.");
       return;
     }
-
-    try {
-      const groupData = {
-        name: groupName,
-        participants: [auth.currentUser.uid, ...selectedParticipants],
-        createdAt: new Date(),
-        createdBy: auth.currentUser.uid,
-        participantCount: selectedParticipants.length + 1,
-      };
-
-      await addDoc(collection(db, "groups"), groupData);
-
-      // Clear inputs after creation
-      setShowGroupModal(false);
-      setGroupName("");
-      setSelectedParticipants([]);
-      alert("Group created successfully!");
-    } catch (error) {
-      console.error("Error creating group:", error);
-    }
+    const groupData = {
+      name: groupName,
+      participants: [auth.currentUser.uid, ...selectedParticipants],
+      createdAt: new Date(),
+      createdBy: auth.currentUser.uid,
+      participantCount: selectedParticipants.length + 1,
+    };
+    await addDoc(collection(db, "groups"), groupData);
+    setShowGroupModal(false);
+    setGroupName("");
+    setSelectedParticipants([]);
+    alert("Group created successfully!");
   };
 
-  // Handle user logout
   const logout = async () => {
-    try {
-      await updateUserStatus(false);
-      await auth.signOut();
-      navigate("/", { replace: true });
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
+    await updateUserStatus(false);
+    await auth.signOut();
+    navigate("/");
   };
 
-  // ✅ Filter users based on search input
   const filteredUsers = users.filter((user) =>
     user.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -1743,6 +310,15 @@ const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
         <Col xs={6} md={4}>
           <h3 className="fw-bold mb-0">Chat</h3>
         </Col>
+
+        {/* 🧩 Show loading text until currentUserData is fetched */}
+        {!currentUserData && (
+          <div className="text-white text-end">
+            <small>Loading user...</small>
+          </div>
+        )}
+
+        {/* 🧩 Once user data is available, show user profile + menu */}
         {currentUserData && (
           <div className="current-user-profile d-flex align-items-center">
             <span
@@ -1750,28 +326,25 @@ const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
                 currentUserData.isOnline ? "online" : "offline"
               }`}
               style={{
-                width: "10px",
-                height: "10px",
+                width: 10,
+                height: 10,
                 borderRadius: "50%",
-                marginRight: "8px",
+                marginRight: 8,
                 backgroundColor: currentUserData.isOnline ? "green" : "red",
               }}
-            ></span>
-            <div style={{ marginRight: "8px" }}>
+            />
+            <div style={{ marginRight: 8 }}>
               {getUserProfileImage(currentUserData.email)}
             </div>
             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-
             <Dropdown align="end">
               <Dropdown.Toggle
                 variant="button"
                 bsPrefix="p-2"
-                id="dropdown-basic"
                 className="text-white fw-bold fs-5"
               >
                 &#8942;
               </Dropdown.Toggle>
-
               <Dropdown.Menu>
                 <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
                 <Dropdown.Item onClick={() => setShowGroupModal(true)}>
@@ -1784,11 +357,8 @@ const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
       </div>
 
       <hr />
-
-      {/* ✅ Search Input */}
-      <Form className="mb-3 shadow-sm rounded-2" style={{ outline: "none" }}>
+      <Form className="mb-3 shadow-sm rounded-2">
         <Form.Control
-          className="shadow-none"
           type="text"
           placeholder="Search users..."
           value={searchTerm}
@@ -1796,65 +366,63 @@ const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
         />
       </Form>
 
-      {/* Render online users with last message and timestamp */}
       {filteredUsers.map((user) => {
         const lastMessage = lastMessages[user.id] || {};
         const unreadCount = unreadCounts[user.id] || 0;
-
         return (
           <div
             key={user.id}
-            onClick={() => setSelectedUser(user)}
-            className="chat-item rounded-3 mb-2"
+            onClick={() => openChat(user)}
+            className="chat-item rounded-3 mb-2 p-3
+            "
           >
-            <div className="chat-item-info d-flex gap-2 ">
-              <div style={{ marginLeft: "8px" }}>
-                {getUserProfileImage(user.email)}
-              </div>
+            <div className="chat-item-info d-flex align-items-start gap-3">
+              {getUserProfileImage(user.email)}
 
-              <div className="w-100">
-                <div className="d-flex align-items-center justify-content-between">
-                  <p className="mb-0 fw-semibold" style={{ fontSize: "16px" }}>
+              <div className="flex-grow-1 d-flex flex-column">
+                {/* Top row: Name and Time */}
+                <div className="d-flex align-items-center justify-content-between mb-1">
+                  <h6 className="mb-0 fw-semibold text-truncate me-2">
                     {user.name || "Unknown User"}
-                  </p>
-                  <span
-                    className="text-white"
-                    style={{ fontSize: "12px", color: "gray" }}
+                  </h6>
+                  <small
+                    className="text-muted text-white-50 fw-bold"
+                    style={{ fontSize: "0.75rem", whiteSpace: "nowrap" }}
                   >
                     {formatTimestamp(lastMessage.timestamp)}
-                  </span>
+                  </small>
                 </div>
 
-                <p
-                  className="text-white-50"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: "1",
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                    fontSize: "13px",
-                    letterSpacing: "0.7px",
-                  }}
-                >
-                  {lastMessage.text || "No messages yet"}{" "}
-                </p>
+                {/* Bottom row: Last message and unread count */}
+                <div className="d-flex align-items-center justify-content-between">
+                  <p
+                    className="mb-0 text-muted text-white-50 text-truncate"
+                    style={{
+                      fontSize: "0.775rem",
+                      maxWidth: "200px",
+                    }}
+                  >
+                    {lastMessage.text || "No messages yet"}
+                  </p>
+
+                  {unreadCount > 0 && (
+                    <span
+                      className="unread-count badge bg-success rounded-pill ms-2"
+                      style={{
+                        minWidth: "20px",
+                        height: "20px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.7rem",
+                      }}
+                    >
+                      {unreadCount}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-
-            {/* Unread Message Count */}
-            {unreadCount > 0 && (
-              <span className="unread-count">{unreadCount}</span>
-            )}
-
-            {/* <span
-              className={`status ${user.isOnline ? "online" : "offline"}`}
-              style={{
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
-                backgroundColor: user.isOnline ? "green" : "red",
-              }}
-            ></span> */}
           </div>
         );
       })}
@@ -1869,7 +437,6 @@ const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
               <Form.Label>Group Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter group name"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
               />
@@ -1909,267 +476,3 @@ const ChatList = ({ setSelectedUser, getUserProfileImage }) => {
 };
 
 export default ChatList;
-
-//Unread Message Counter show code
-
-// import React, { useState, useEffect } from "react";
-// import { db, auth } from "../firebaseConfig";
-// import {
-//   collection,
-//   onSnapshot,
-//   doc,
-//   getDoc,
-//   getDocs,
-//   query,
-//   orderBy,
-//   limit,
-//   where,
-//   updateDoc,
-// } from "firebase/firestore";
-// import { writeBatch } from "firebase/firestore";
-// import Col from "react-bootstrap/Col";
-// import { useNavigate } from "react-router-dom";
-
-// const ChatList = ({ setSelectedUser }) => {
-//   const [users, setUsers] = useState([]);
-//   const [currentUserData, setCurrentUserData] = useState(null);
-//   const [lastMessages, setLastMessages] = useState({});
-//   const [unreadCounts, setUnreadCounts] = useState({});
-//   const navigate = useNavigate();
-
-//   const updateUserStatus = async (status) => {
-//     const currentUser = auth.currentUser;
-//     if (currentUser) {
-//       try {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         await updateDoc(userDocRef, { isOnline: status });
-//       } catch (error) {
-//         console.error("Error updating user status:", error);
-//       }
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchCurrentUser = async () => {
-//       const currentUser = auth.currentUser;
-//       if (currentUser) {
-//         const userDocRef = doc(db, "users", currentUser.uid);
-//         const userDoc = await getDoc(userDocRef);
-//         if (userDoc.exists()) {
-//           setCurrentUserData({ id: currentUser.uid, ...userDoc.data() });
-//         }
-//         await updateUserStatus(true);
-//       } else {
-//         console.log("No user is currently logged in.");
-//       }
-//     };
-
-//     fetchCurrentUser();
-
-//     const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
-//       const onlineUsers = snapshot.docs
-//         .map((doc) => ({ id: doc.id, ...doc.data() }))
-//         .filter((user) => user.id !== auth.currentUser?.uid);
-
-//       setUsers(onlineUsers);
-//       if (auth.currentUser) {
-//         fetchLastMessages(onlineUsers);
-//         fetchUnreadCounts(onlineUsers);
-//       }
-//     });
-
-//     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-//       if (user) {
-//         updateUserStatus(true);
-//         fetchCurrentUser();
-//       } else {
-//         setCurrentUserData(null);
-//         navigate("/login");
-//       }
-//     });
-
-//     return () => {
-//       unsubscribe();
-//       unsubscribeAuth();
-//     };
-//   }, [navigate]);
-
-//   const fetchLastMessages = async (onlineUsers) => {
-//     const currentUser = auth.currentUser;
-//     if (!currentUser) return;
-
-//     for (const user of onlineUsers) {
-//       const q = query(
-//         collection(db, "chats"),
-//         where("participants", "array-contains", currentUser.uid),
-//         orderBy("timestamp", "desc"),
-//         limit(1)
-//       );
-
-//       const querySnapshot = await getDocs(q);
-//       if (!querySnapshot.empty) {
-//         const lastMessage = querySnapshot.docs[0].data().text;
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: lastMessage,
-//         }));
-//       } else {
-//         setLastMessages((prevMessages) => ({
-//           ...prevMessages,
-//           [user.id]: "No messages yet",
-//         }));
-//       }
-//     }
-//   };
-
-//   const fetchUnreadCounts = async (onlineUsers) => {
-//     const currentUser = auth.currentUser;
-//     if (!currentUser) return;
-
-//     const unreadCountsTemp = {};
-//     for (const user of onlineUsers) {
-//       const q = query(
-//         collection(db, "chats"),
-//         where("receiverId", "==", currentUser.uid),
-//         where("senderId", "==", user.id),
-//         where("isRead", "==", false) // Only unread messages
-//       );
-
-//       const querySnapshot = await getDocs(q);
-//       unreadCountsTemp[user.id] = querySnapshot.size; // Count unread messages
-//     }
-//     setUnreadCounts(unreadCountsTemp);
-//   };
-
-//   const markMessagesAsRead = async (selectedUser) => {
-//     const currentUser = auth.currentUser;
-//     if (!currentUser || !selectedUser) return;
-
-//     try {
-//       // Create a batch instance
-//       const batch = writeBatch(db);
-
-//       // Query for unread messages
-//       const q = query(
-//         collection(db, "chats"),
-//         where("receiverId", "==", currentUser.uid),
-//         where("senderId", "==", selectedUser.id),
-//         where("isRead", "==", false)
-//       );
-
-//       const querySnapshot = await getDocs(q);
-
-//       // Add each message to the batch for updating
-//       querySnapshot.forEach((doc) => {
-//         const messageRef = doc.ref;
-//         batch.update(messageRef, { isRead: true });
-//       });
-
-//       // Commit the batch
-//       await batch.commit();
-//       console.log("All messages marked as read.");
-//     } catch (error) {
-//       console.error("Error marking messages as read:", error);
-//     }
-//   };
-
-//   const handleUserClick = (user) => {
-//     setSelectedUser(user);
-//     markMessagesAsRead(user); // Mark messages as read
-//     setUnreadCounts((prevCounts) => ({ ...prevCounts, [user.id]: 0 })); // Reset unread count
-//   };
-
-//   const logout = async () => {
-//     try {
-//       await updateUserStatus(false);
-//       await auth.signOut();
-//       navigate("/", { replace: true });
-//     } catch (error) {
-//       console.error("Error during logout:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="chat-list">
-//       <div className="d-flex justify-content-between align-items-center">
-//         <Col xs={6} md={4}>
-//           <h3 className="fw-bold">Whatsapp</h3>
-//         </Col>
-
-//         {currentUserData && (
-//           <div className="current-user-profile d-flex align-items-center">
-//             <span
-//               className={`status-indicator ${
-//                 currentUserData.isOnline ? "online" : "offline"
-//               }`}
-//               style={{
-//                 width: "10px",
-//                 height: "10px",
-//                 borderRadius: "50%",
-//                 marginRight: "8px",
-//                 backgroundColor: currentUserData.isOnline ? "green" : "red",
-//               }}
-//             ></span>
-//             <img
-//               src={
-//                 localStorage.getItem("profileImage") || "/default-profile.jpg"
-//               }
-//               alt="Profile"
-//               style={{
-//                 width: "40px",
-//                 height: "40px",
-//                 borderRadius: "50%",
-//                 objectFit: "cover",
-//                 marginRight: "8px",
-//               }}
-//             />
-//             <h3 className="fw-bold mb-0">{currentUserData.name || "User"}</h3>
-//           </div>
-//         )}
-//       </div>
-
-//       <hr />
-
-//       {users.map((user) => {
-//         const userImage = localStorage.getItem(`profileImage_${user.id}`);
-//         return (
-//           <div
-//             key={user.id}
-//             onClick={() => handleUserClick(user)}
-//             className="chat-item"
-//           >
-//             <div className="chat-item-info">
-//               <p>{user.name || "Unknown User"}</p>
-//               <p>{lastMessages[user.id] || "No messages yet"}</p>
-//               {unreadCounts[user.id] > 0 && (
-//                 <span className="badge bg-danger ms-2">
-//                   {unreadCounts[user.id]} new
-//                 </span>
-//               )}
-//             </div>
-//             <img
-//               src={userImage || "/default-profile.jpg"}
-//               alt="User Profile"
-//               style={{
-//                 width: "40px",
-//                 height: "40px",
-//                 borderRadius: "50%",
-//                 objectFit: "cover",
-//                 marginLeft: "8px",
-//               }}
-//             />
-//           </div>
-//         );
-//       })}
-
-//       <button
-//         className="logout-btn log-out position-absolute px-3 rounded-3 text-bg-danger"
-//         onClick={logout}
-//       >
-//         Logout
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default ChatList;

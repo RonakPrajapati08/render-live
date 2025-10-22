@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="./images/chatapp1024x1024.png" />
+  <!-- <link rel="icon" href="./images/chatapp1024x1024.png" /> -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta name="description" content="Web site created using create-react-app" />
@@ -27,23 +27,23 @@
 
 
   <script>
-    // if ('serviceWorker' in navigator) {
-    //   window.addEventListener('load', () => {
-    //     navigator.serviceWorker.register('/Chat-App/serviceworker.js')
-    //       .then((reg) => console.log('Success: ', reg.scope))
-    //       .catch((err) => console.log('Failure: ', err));
-    //   })
-    // }
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", async () => {
-        try {
-          await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-          console.log("Service Worker registered successfully.");
-        } catch (err) {
-          console.error("Service Worker registration failed:", err);
-        }
-      });
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+          .then((reg) => console.log('Success: ', reg.scope))
+          .catch((err) => console.log('Failure: ', err));
+      })
     }
+    // if ("serviceWorker" in navigator) {
+    //   window.addEventListener("load", async () => {
+    //     try {
+    //       await navigator.serviceWorker.register("/Chat-App/firebase-messaging-sw.js");
+    //       console.log("Service Worker registered successfully.");
+    //     } catch (err) {
+    //       console.error("Service Worker registration failed:", err);
+    //     }
+    //   });
+    // }
 
   </script>
 

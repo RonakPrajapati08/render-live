@@ -56,14 +56,82 @@
 
 // export default App;
 
+// import React, { useEffect, useState } from "react";
+// import {
+//   BrowserRouter as Router,
+//   Route,
+//   Routes,
+//   Navigate,
+// } from "react-router-dom";
+// import { auth } from "./firebaseConfig";
+// import LoginPage from "./components/LoginPage";
+// import SignUp from "./components/SignUp";
+// import ChatPage from "./components/ChatPage";
+// import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap
+
+// function App() {
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+//       if (currentUser) {
+//         setUser(currentUser);
+//       } else {
+//         setUser(null);
+//       }
+//       setLoading(false);
+//     });
+
+//     return () => unsubscribe();
+//   }, []);
+
+//   if (loading) {
+//     return (
+//       <div className="d-flex justify-content-center align-items-center vh-100">
+//         <div className="typing-indicator">
+//           <div className="typing-circle"></div>
+//           <div className="typing-circle"></div>
+//           <div className="typing-circle"></div>
+//           <div className="typing-shadow"></div>
+//           <div className="typing-shadow"></div>
+//           <div className="typing-shadow"></div>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <Router basename="/Chat-App">
+//       <Routes>
+//         <Route
+//           path="/"
+//           element={user ? <Navigate to={`/chat/${user.uid}`} /> : <LoginPage />}
+//         />
+//         <Route path="/SignUp" element={<SignUp />} />
+//         <Route
+//           path="/chat/:userId"
+//           element={user ? <ChatPage /> : <Navigate to="/" />}
+//         />
+//       </Routes>
+//     </Router>
+//   );
+// }
+
+// export default App;
+
 import React, { useEffect, useState } from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   Routes,
   Navigate,
 } from "react-router-dom";
-import { auth } from "./firebaseConfig";
+import {
+  auth,
+  requestNotificationPermission,
+  listenForMessages,
+} from "./firebaseConfig";
 import LoginPage from "./components/LoginPage";
 import SignUp from "./components/SignUp";
 import ChatPage from "./components/ChatPage";
@@ -86,6 +154,13 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      requestNotificationPermission(); // ask for notification permission
+      listenForMessages(user.uid); // listen to Firestore for new messages
+    }
+  }, [user]);
+
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -102,7 +177,7 @@ function App() {
   }
 
   return (
-    <Router basename="/Chat-App">
+    <Router>
       <Routes>
         <Route
           path="/"

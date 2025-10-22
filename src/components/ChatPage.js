@@ -898,20 +898,13 @@
 
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebaseConfig";
-import {
-  getDoc,
-  doc,
-  onSnapshot,
-  updateDoc,
-  arrayRemove,
-} from "firebase/firestore";
+import { onSnapshot, doc, updateDoc, arrayRemove } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import ChatList from "./UserList";
 import MessageArea from "./MessageArea";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Spinner from "react-bootstrap/Spinner";
-import { useLocation } from "react-router-dom";
 
 const ChatPage = () => {
   const { userId } = useParams();
@@ -927,57 +920,35 @@ const ChatPage = () => {
   const [showToast, setShowToast] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Listen to auth state
   useEffect(() => {
-    const checkUserProfile = async (user) => {
-      const userDocRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(userDocRef);
-
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        if (!userData.name || !userData.email) {
-          navigate("/profile-completion");
-        }
-      } else {
-        navigate("/profile-completion");
-      }
-    };
-
-    // ✅ Fetch user from localStorage before calling Firebase auth
-    const storedUser = localStorage.getItem("currentUser");
-
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
-    }
-
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
         localStorage.setItem("currentUser", JSON.stringify(user));
-        checkUserProfile(user);
         if (!userId || userId !== user.uid) {
           navigate(`/chat/${user.uid}`);
         }
       } else {
         setCurrentUser(null);
         localStorage.removeItem("currentUser");
-        navigate("/login");
+        navigate("/");
       }
     });
 
     return () => unsubscribeAuth();
   }, [navigate, userId]);
 
+  // Show success toast if available
   useEffect(() => {
     if (successMessage) {
       setShowToast(true);
-      const timer = setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
-
+      const timer = setTimeout(() => setShowToast(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
 
+  // Notifications listener
   useEffect(() => {
     if (currentUser) {
       const notificationRef = doc(db, "notifications", currentUser.uid);
@@ -1003,6 +974,7 @@ const ChatPage = () => {
     }
   }, [currentUser]);
 
+  // Show session success message
   useEffect(() => {
     const successMessage = sessionStorage.getItem("successMessage");
 
@@ -1010,15 +982,11 @@ const ChatPage = () => {
       setMessage(successMessage);
       setShowToast(true);
       sessionStorage.removeItem("successMessage");
-
-      setTimeout(() => {
-        console.log("Hiding toast after 3 seconds");
-        setShowToast(false);
-      }, 3000);
+      setTimeout(() => setShowToast(false), 3000);
     }
   }, []);
 
-  // ✅ Persist selected user after page refresh
+  // Persist selected user after refresh
   useEffect(() => {
     if (selectedUser) {
       localStorage.setItem("selectedUser", JSON.stringify(selectedUser));
@@ -1034,8 +1002,9 @@ const ChatPage = () => {
 
   const isMobile = window.innerWidth <= 600;
 
+  // Profile image placeholder
   const getUserProfileImage = (email) => {
-    const firstLetter = email.charAt(0).toUpperCase();
+    const firstLetter = email?.charAt(0).toUpperCase() || "?"; // Use '?' if email is missing
     return (
       <div
         style={{
