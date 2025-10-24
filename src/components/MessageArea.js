@@ -745,7 +745,8 @@ const MessageArea = ({ selectedUser, setSelectedUser, getUserProfileImage }) => 
     if (recipientToken) {
       try {
         // await fetch("http://localhost:3000/send-notification", { //local testing
-        await fetch("https://render-live.onrender.com/send-notification", {
+        // await fetch("https://render-live.onrender.com/send-notification", { //deployed server
+        await fetch("/send-notification", { //relative path for deployed server
           // 🔹 Replace with your localtunnel URL when testing on phone:
           // await fetch("https://your-tunnel-url.loca.lt/send-notification", {
           method: "POST",

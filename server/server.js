@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const cors = require("cors");
+const path = require("path"); // ✅ for serving frontend
 
 const app = express();
 app.use(cors());
@@ -42,6 +43,13 @@ app.post("/send-notification", async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+
+// 🔹 Serve React frontend build
+app.use(express.static(path.join(__dirname, "../src/build")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../src/build", "index.html"));
+});
+
 
 // 🚀 Start server
 const PORT = process.env.PORT || 3000;
