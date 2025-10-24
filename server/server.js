@@ -3,26 +3,24 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const cors = require("cors");
-const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// 🔑 Load your Firebase Admin SDK key from functions folder
-// const serviceAccount = require("./functions/serviceAccountKey.json");
+// 🔑 Load Firebase Admin SDK credentials from environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// Simple test route
+// ✅ Simple test route
 app.get("/", (req, res) => {
   res.send("✅ Render backend + Firebase Admin is working!");
 });
 
-// 🟢 API to send notifications
+// 🟢 API endpoint to send notifications
 app.post("/send-notification", async (req, res) => {
   const { token, title, body } = req.body;
 
@@ -45,7 +43,8 @@ app.post("/send-notification", async (req, res) => {
   }
 });
 
+// 🚀 Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
