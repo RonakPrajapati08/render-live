@@ -744,7 +744,8 @@ const MessageArea = ({ selectedUser, setSelectedUser, getUserProfileImage }) => 
     // 4️⃣ Send push notification via your Node.js server
     if (recipientToken) {
       try {
-        await fetch("http://localhost:3000/send-notification", {
+        // await fetch("http://localhost:3000/send-notification", { //local testing
+        await fetch("https://render-live.onrender.com/send-notification", {
           // 🔹 Replace with your localtunnel URL when testing on phone:
           // await fetch("https://your-tunnel-url.loca.lt/send-notification", {
           method: "POST",
