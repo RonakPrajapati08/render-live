@@ -17,6 +17,11 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+// Simple test route
+app.get("/", (req, res) => {
+  res.send("✅ Render backend + Firebase Admin is working!");
+});
+
 // 🟢 API to send notifications
 app.post("/send-notification", async (req, res) => {
   const { token, title, body } = req.body;
