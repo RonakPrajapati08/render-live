@@ -44,18 +44,6 @@ app.post("/send-notification", async (req, res) => {
   }
 });
 
-// 🔹 Serve React frontend build
-// app.use(express.static(path.join(__dirname, "../src/build")));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "../src/build", "index.html"));
-// });
-
-// 🔹 Serve React build (important fix)
-// app.use(express.static(path.join(__dirname, "../build")));
-// app.get("/*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "../build", "index.html"));
-// });  
-
 // 🚀 Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
