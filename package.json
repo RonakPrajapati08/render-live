@@ -15,6 +15,7 @@
     "firebase": "^11.0.2",
     "firebase-admin": "^13.5.0",
     "git-filter-repo": "^0.0.30",
+    "mime-types": "^3.0.1",
     "process": "^0.11.10",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
