@@ -140,10 +140,10 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     await checkUserProfile(user); // Ensure user has a profile in Firestore
     await updateUserStatus(user.uid, true);
-    await requestNotificationPermission(user);
+    // await requestNotificationPermission(user);
   } else {
     // User is signed out, set their status to offline
-    const userId = auth.currentUser;
+    const userId = auth.currentUser?.uid;
     if (userId) {
       updateUserStatus(userId.uid, false); // Set the user as offline
     }
@@ -163,13 +163,53 @@ const updateUserStatus = async (userId, status) => {
 };
 
 // Function to request push notification permission and get the FCM token
+// const requestNotificationPermission = async () => {
+//   if ("serviceWorker" in navigator && messaging) {
+//     try {
+//       const token = await getToken(messaging, {
+//         vapidKey:
+//           "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
+//       });
+//       if (token && auth.currentUser) {
+//         console.log("Notification Token:", token);
+//         await setDoc(
+//           doc(db, "users", auth.currentUser.uid),
+//           { fcmToken: token },
+//           { merge: true }
+//         );
+//         console.log("FCM token saved:", token);
+//       }
+//     } catch (error) {
+//       console.error("Error getting notification token:", error);
+//     }
+//   } else {
+//     console.warn("Push notifications are not supported on this browser.");
+//   }
+// };
 const requestNotificationPermission = async () => {
-  if ("serviceWorker" in navigator && messaging) {
-    try {
+  if (!("Notification" in window)) {
+    console.warn("This browser does not support notifications.");
+    return;
+  }
+
+  try {
+    // Ask user for permission first
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      console.log("Notification permission granted.");
+
+      // Register your SW (for GitHub Pages)
+      const registration = await navigator.serviceWorker.register(
+        '/render-live/firebase-messaging-sw.js'
+      );
+
       const token = await getToken(messaging, {
         vapidKey:
           "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
+        serviceWorkerRegistration: registration,
       });
+
       if (token && auth.currentUser) {
         console.log("Notification Token:", token);
         await setDoc(
@@ -179,11 +219,16 @@ const requestNotificationPermission = async () => {
         );
         console.log("FCM token saved:", token);
       }
-    } catch (error) {
-      console.error("Error getting notification token:", error);
+    } else if (permission === "denied") {
+      console.warn("Notification permission denied by user.");
+      alert(
+        "You blocked notifications. Please enable them from your browser settings to receive messages."
+      );
+    } else {
+      console.log("Notification permission dismissed or not granted.");
     }
-  } else {
-    console.warn("Push notifications are not supported on this browser.");
+  } catch (error) {
+    console.error("Error getting notification token:", error);
   }
 };
 // ✅ Function to request notification permission and generate token if needed

@@ -101,6 +101,9 @@ const ChatList = ({ setSelectedUser }) => {
 
   //new code
   useEffect(() => {
+    let isMounted = true; // ✅ to prevent state updates after unmount
+     let currentUser = null;
+
     const fetchCurrentUser = async (firebaseUser) => {
       if (!firebaseUser) return;
 
@@ -132,6 +135,7 @@ const ChatList = ({ setSelectedUser }) => {
 
     // ✅ Listen to auth state changes
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+      currentUser = user;
       if (user) {
         fetchCurrentUser(user);
       } else {
@@ -141,33 +145,50 @@ const ChatList = ({ setSelectedUser }) => {
     });
 
     // ✅ Listen to all users for real-time updates
-    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+    const unsubscribe = onSnapshot(collection(db, "users"), async (snapshot) => {
+      if (!isMounted || !currentUser) return; // ✅ stop if unmounted or logged out
+
       const allUsers = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      const currentUid = auth.currentUser?.uid;
+      // const currentUid = auth.currentUser?.uid;
+      const currentUid = currentUser.uid;
+
+       if (!currentUid) return; // ✅ skip if user logged out
       const onlineUsers = allUsers.filter(
         (u) => u.isOnline && u.id !== currentUid
       );
       setUsers(onlineUsers);
 
-      if (currentUid) fetchLastMessages(onlineUsers);
+    //  fetchLastMessages(onlineUsers);
+    try {
+      await fetchLastMessages(onlineUsers, currentUid); // ✅ pass uid manually
+    } catch (err) {
+      console.warn("Skipping fetchLastMessages due to logout or race:", err);
+    }
     });
 
     return () => {
+       isMounted = false;
       unsubscribe();
       unsubscribeAuth();
     };
   }, [navigate]);
 
-  const fetchLastMessages = async (onlineUsers) => {
-    if (!auth.currentUser) return;
+  const fetchLastMessages = async (onlineUsers, currentUid) => {
+    // if (!auth.currentUser) return;
+    //   const currentUser = auth.currentUser;
+    // if (!currentUser) return;
+    if (!currentUid) return; // ✅ skip if null
+    
     for (const user of onlineUsers) {
+       if (!currentUid) break; // ✅ stop immediately if logged out mid-loop
+
       const q = query(
         collection(db, "chats"),
-        where("participants", "array-contains", auth.currentUser.uid),
+        where("participants", "array-contains", currentUid),
         orderBy("timestamp", "desc"),
         limit(1)
       );
@@ -183,7 +204,7 @@ const ChatList = ({ setSelectedUser }) => {
         }));
         const unreadQuery = query(
           collection(db, "chats"),
-          where("userId", "==", auth.currentUser.uid),
+          where("userId", "==", currentUid),
           where("senderId", "==", user.id),
           where("isRead", "==", false)
         );

@@ -1,7 +1,7 @@
 // LoginPage.js
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebaseConfig";
-// import { requestNotificationPermission } from "../firebaseConfig"; // Add this import
+import { requestNotificationPermission } from "../firebaseConfig"; // Add this import
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +52,7 @@ const LoginPage = () => {
       );
       const user = userCredential.user;
       // ✅ Request notification permission AFTER successful login
-      // await requestNotificationPermission(user);
+      await requestNotificationPermission(user);
 
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
