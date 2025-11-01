@@ -44,6 +44,36 @@ const storage = getStorage(app);
 const functions = getFunctions(app); // 👈 Added
 const messaging = getMessaging(app);
 
+const CURRENT_VERSION = "1.0.5"; // 🔹 Change version number on every deploy
+const VERSION_KEY = "app_version";
+
+if (localStorage.getItem(VERSION_KEY) !== CURRENT_VERSION) {
+  console.log("🧹 New version detected, clearing old caches & SWs...");
+
+  // Unregister all service workers
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        registration.unregister().then(() => {
+          console.log("🧹 Old SW unregistered:", registration.scope);
+        });
+      });
+    });
+  }
+
+  // Delete all caches
+  if (window.caches) {
+    caches.keys().then((cacheNames) => {
+      cacheNames.forEach((name) => {
+        caches.delete(name).then(() => console.log("🧹 Cache deleted:", name));
+      });
+    });
+  }
+
+  // Save current version to localStorage
+  localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
+}
+
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
     .register("/render-live/firebase-messaging-sw.js")
