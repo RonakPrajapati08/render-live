@@ -41,7 +41,7 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-    await requestNotificationPermission(user);
+    // await requestNotificationPermission(user);
     setLoading(true);
 
     try {
@@ -51,6 +51,8 @@ const LoginPage = () => {
         password
       );
       const user = userCredential.user;
+      // ✅ Request notification permission AFTER successful login
+      await requestNotificationPermission(user);
 
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
