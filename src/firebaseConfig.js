@@ -74,10 +74,10 @@ const updateChatsWithParticipants = async () => {
         participants: participantsArray,
       });
 
-      console.log(
-        `Updated chat ${chatDoc.id} with participants`,
-        participantsArray
-      );
+      // console.log(
+      //   `Updated chat ${chatDoc.id} with participants`,
+      //   participantsArray
+      // );
     }
   });
 
