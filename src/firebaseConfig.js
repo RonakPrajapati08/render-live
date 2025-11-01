@@ -46,7 +46,7 @@ const messaging = getMessaging(app);
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
-    .register("/render-live/firebase-messaging-sw.js")
+    .register("/firebase-messaging-sw.js")
     .then((registration) => console.log("SW registered", registration))
     .catch((err) => console.error("SW registration failed", err));
 }
@@ -156,45 +156,6 @@ const requestNotificationPermission = async () => {
     console.warn("Push notifications are not supported on this browser.");
   }
 };
-// ✅ Function to request notification permission and generate token if needed
-// ✅ Generate FCM Token Automatically on Login (No Notification Permission)
-// const requestNotificationPermission = async (user) => {
-//   if (!user) return;
-
-//   try {
-//     const userRef = doc(db, "users", user.uid);
-//     const userSnap = await getDoc(userRef);
-
-//     // Check if FCM token already exists
-//     const existingToken = userSnap.exists() ? userSnap.data().fcmToken : null;
-
-//     if (existingToken) {
-//       console.log("✅ FCM token already exists for this user. Skipping...");
-//       return;
-//     }
-
-//     console.log("📱 Generating new FCM token without permission prompt...");
-//     const token = await getToken(messaging, {
-//       vapidKey:
-//         "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
-//     });
-
-//     if (token) {
-//       await setDoc(
-//         userRef,
-//         { fcmToken: token },
-//         { merge: true } // merge ensures existing user data stays intact
-//       );
-//       console.log("✅ FCM token saved for user:", token);
-//     } else {
-//       console.warn("⚠️ FCM token not generated (possibly blocked or unsupported).");
-//     }
-//   } catch (error) {
-//     console.error("❌ Error generating FCM token:", error);
-//   }
-// };
-
-
 
 // Listen for foreground messages
 onMessage(messaging, (payload) => {
