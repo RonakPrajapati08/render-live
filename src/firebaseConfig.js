@@ -157,6 +157,7 @@ const updateUserStatus = async (userId, status) => {
 //   }
 // };
 // ✅ Function to request notification permission and generate token if needed
+// ✅ Generate FCM Token Automatically on Login (No Notification Permission)
 const requestNotificationPermission = async (user) => {
   if (!user) return;
 
@@ -168,35 +169,31 @@ const requestNotificationPermission = async (user) => {
     const existingToken = userSnap.exists() ? userSnap.data().fcmToken : null;
 
     if (existingToken) {
-      console.log("✅ FCM token already exists, skipping generation.");
-      return; // No need to generate again
+      console.log("✅ FCM token already exists for this user. Skipping...");
+      return;
     }
 
-    console.log("🔔 Requesting notification permission...");
-    const permission = await Notification.requestPermission();
+    console.log("📱 Generating new FCM token without permission prompt...");
+    const token = await getToken(messaging, {
+      vapidKey:
+        "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
+    });
 
-    if (permission === "granted") {
-      console.log("📱 Permission granted. Generating new FCM token...");
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
-      });
-
-      if (token) {
-        await setDoc(
-          userRef,
-          { fcmToken: token },
-          { merge: true } // Merge ensures no data overwrite
-        );
-        console.log("✅ New FCM token saved:", token);
-      }
+    if (token) {
+      await setDoc(
+        userRef,
+        { fcmToken: token },
+        { merge: true } // merge ensures existing user data stays intact
+      );
+      console.log("✅ FCM token saved for user:", token);
     } else {
-      console.warn("❌ Notification permission denied.");
+      console.warn("⚠️ FCM token not generated (possibly blocked or unsupported).");
     }
   } catch (error) {
-    console.error("Error generating FCM token:", error);
+    console.error("❌ Error generating FCM token:", error);
   }
 };
+
 
 
 // Listen for foreground messages
