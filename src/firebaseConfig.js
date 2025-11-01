@@ -106,15 +106,16 @@ const checkUserProfile = async (user) => {
 };
 
 // Listen for authentication state changes (log in/out)
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (user) {
-    checkUserProfile(user); // Ensure user has a profile in Firestore
-    requestNotificationPermission();
+    await checkUserProfile(user); // Ensure user has a profile in Firestore
+    await updateUserStatus(user.uid, true);
+    await requestNotificationPermission(user);
   } else {
     // User is signed out, set their status to offline
-    const userId = auth.currentUser?.uid;
+    const userId = auth.currentUser;
     if (userId) {
-      updateUserStatus(userId, false); // Set the user as offline
+      updateUserStatus(userId.uid, false); // Set the user as offline
     }
   }
 });
@@ -132,29 +133,71 @@ const updateUserStatus = async (userId, status) => {
 };
 
 // Function to request push notification permission and get the FCM token
-const requestNotificationPermission = async () => {
-  if ("serviceWorker" in navigator && messaging) {
-    try {
+// const requestNotificationPermission = async () => {
+//   if ("serviceWorker" in navigator && messaging) {
+//     try {
+//       const token = await getToken(messaging, {
+//         vapidKey:
+//           "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
+//       });
+//       if (token && auth.currentUser) {
+//         console.log("Notification Token:", token);
+//         await setDoc(
+//           doc(db, "users", auth.currentUser.uid),
+//           { fcmToken: token },
+//           { merge: true }
+//         );
+//         console.log("FCM token saved:", token);
+//       }
+//     } catch (error) {
+//       console.error("Error getting notification token:", error);
+//     }
+//   } else {
+//     console.warn("Push notifications are not supported on this browser.");
+//   }
+// };
+// ✅ Function to request notification permission and generate token if needed
+const requestNotificationPermission = async (user) => {
+  if (!user) return;
+
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    // Check if FCM token already exists
+    const existingToken = userSnap.exists() ? userSnap.data().fcmToken : null;
+
+    if (existingToken) {
+      console.log("✅ FCM token already exists, skipping generation.");
+      return; // No need to generate again
+    }
+
+    console.log("🔔 Requesting notification permission...");
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      console.log("📱 Permission granted. Generating new FCM token...");
       const token = await getToken(messaging, {
         vapidKey:
           "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
       });
-      if (token && auth.currentUser) {
-        console.log("Notification Token:", token);
+
+      if (token) {
         await setDoc(
-          doc(db, "users", auth.currentUser.uid),
+          userRef,
           { fcmToken: token },
-          { merge: true }
+          { merge: true } // Merge ensures no data overwrite
         );
-        console.log("FCM token saved:", token);
+        console.log("✅ New FCM token saved:", token);
       }
-    } catch (error) {
-      console.error("Error getting notification token:", error);
+    } else {
+      console.warn("❌ Notification permission denied.");
     }
-  } else {
-    console.warn("Push notifications are not supported on this browser.");
+  } catch (error) {
+    console.error("Error generating FCM token:", error);
   }
 };
+
 
 // Listen for foreground messages
 onMessage(messaging, (payload) => {

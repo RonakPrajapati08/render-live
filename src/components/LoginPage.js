@@ -1,6 +1,7 @@
 // LoginPage.js
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebaseConfig";
+import { requestNotificationPermission } from "../firebaseConfig"; // Add this import
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
@@ -40,6 +41,7 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    await requestNotificationPermission(user);
     setLoading(true);
 
     try {
