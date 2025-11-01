@@ -133,66 +133,66 @@ const updateUserStatus = async (userId, status) => {
 };
 
 // Function to request push notification permission and get the FCM token
-// const requestNotificationPermission = async () => {
-//   if ("serviceWorker" in navigator && messaging) {
-//     try {
-//       const token = await getToken(messaging, {
-//         vapidKey:
-//           "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
-//       });
-//       if (token && auth.currentUser) {
-//         console.log("Notification Token:", token);
-//         await setDoc(
-//           doc(db, "users", auth.currentUser.uid),
-//           { fcmToken: token },
-//           { merge: true }
-//         );
-//         console.log("FCM token saved:", token);
-//       }
-//     } catch (error) {
-//       console.error("Error getting notification token:", error);
-//     }
-//   } else {
-//     console.warn("Push notifications are not supported on this browser.");
-//   }
-// };
-// ✅ Function to request notification permission and generate token if needed
-// ✅ Generate FCM Token Automatically on Login (No Notification Permission)
-const requestNotificationPermission = async (user) => {
-  if (!user) return;
-
-  try {
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-
-    // Check if FCM token already exists
-    const existingToken = userSnap.exists() ? userSnap.data().fcmToken : null;
-
-    if (existingToken) {
-      console.log("✅ FCM token already exists for this user. Skipping...");
-      return;
+const requestNotificationPermission = async () => {
+  if ("serviceWorker" in navigator && messaging) {
+    try {
+      const token = await getToken(messaging, {
+        vapidKey:
+          "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
+      });
+      if (token && auth.currentUser) {
+        console.log("Notification Token:", token);
+        await setDoc(
+          doc(db, "users", auth.currentUser.uid),
+          { fcmToken: token },
+          { merge: true }
+        );
+        console.log("FCM token saved:", token);
+      }
+    } catch (error) {
+      console.error("Error getting notification token:", error);
     }
-
-    console.log("📱 Generating new FCM token without permission prompt...");
-    const token = await getToken(messaging, {
-      vapidKey:
-        "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
-    });
-
-    if (token) {
-      await setDoc(
-        userRef,
-        { fcmToken: token },
-        { merge: true } // merge ensures existing user data stays intact
-      );
-      console.log("✅ FCM token saved for user:", token);
-    } else {
-      console.warn("⚠️ FCM token not generated (possibly blocked or unsupported).");
-    }
-  } catch (error) {
-    console.error("❌ Error generating FCM token:", error);
+  } else {
+    console.warn("Push notifications are not supported on this browser.");
   }
 };
+// ✅ Function to request notification permission and generate token if needed
+// ✅ Generate FCM Token Automatically on Login (No Notification Permission)
+// const requestNotificationPermission = async (user) => {
+//   if (!user) return;
+
+//   try {
+//     const userRef = doc(db, "users", user.uid);
+//     const userSnap = await getDoc(userRef);
+
+//     // Check if FCM token already exists
+//     const existingToken = userSnap.exists() ? userSnap.data().fcmToken : null;
+
+//     if (existingToken) {
+//       console.log("✅ FCM token already exists for this user. Skipping...");
+//       return;
+//     }
+
+//     console.log("📱 Generating new FCM token without permission prompt...");
+//     const token = await getToken(messaging, {
+//       vapidKey:
+//         "BBDvONRa7kLZ6Oq334_gd1lb4VAls6uhcxxZ0kDzm12N38T09sb7rKEbbkK8Dmxl27unIN_tBu7Lr9DoqvP7XGg",
+//     });
+
+//     if (token) {
+//       await setDoc(
+//         userRef,
+//         { fcmToken: token },
+//         { merge: true } // merge ensures existing user data stays intact
+//       );
+//       console.log("✅ FCM token saved for user:", token);
+//     } else {
+//       console.warn("⚠️ FCM token not generated (possibly blocked or unsupported).");
+//     }
+//   } catch (error) {
+//     console.error("❌ Error generating FCM token:", error);
+//   }
+// };
 
 
 
