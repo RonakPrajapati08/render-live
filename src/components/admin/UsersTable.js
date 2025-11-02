@@ -302,7 +302,7 @@ const UsersTable = ({ users, handleRoleChange }) => {
             animate="visible"
             exit="exit"
           >
-            {/* 🧑‍💼 CARD VIEW */}
+            {/* 🧑‍💼 CARD VIEW */} 
             <div className="row g-4 mt-2">
               {currentUsers.length > 0 ? (
                 currentUsers.map((u) => (
