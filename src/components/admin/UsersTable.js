@@ -18,7 +18,7 @@ const UsersTable = ({ users, handleRoleChange }) => {
       u.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-// 🆕 Handle Delete User using render server
+  // 🆕 Handle Delete User using render server
   const handleDeleteUser = async (u) => {
     if (u.email === auth.currentUser.email) {
       alert("❌ You cannot delete your own account.");
@@ -252,27 +252,35 @@ const UsersTable = ({ users, handleRoleChange }) => {
                             {u.isOnline ? "Online" : "Offline"}
                           </span>
                         </td>
-                        <td className="d-flex justify-content-center gap-2 flex-wrap">
-                          <button
-                            className={`btn btn-sm fw-bold ${u.roleId === 1
-                              ? "btn-outline-primary"
-                              : "btn-outline-danger"
-                              }`}
-                            onClick={() => handleRoleChange(u)}
-                            disabled={u.email === auth.currentUser.email}
+                        <td
+                          style={{
+                            // backgroundColor: index % 2 === 0 ? "#e8ebf1ff" : "#f1f4f9ff",
+                            padding: "10px",
+                            verticalAlign: "middle",
+                          }}
+                        >
+                          <div
+                            className="d-flex justify-content-center align-items-center gap-2 flex-wrap"
+                            style={{ background: "transparent" }}
                           >
-                            Change Role
-                          </button>
+                            <button
+                              className={`btn btn-sm fw-bold ${u.roleId === 1 ? "btn-outline-primary" : "btn-outline-danger"
+                                }`}
+                              onClick={() => handleRoleChange(u)}
+                            >
+                              Change Role
+                            </button>
 
-                          {/* 🆕 Delete Button */}
-                          <button
-                            className="btn btn-sm btn-outline-warning fw-bold"
-                            onClick={() => handleDeleteUser(u)}
-                            disabled={u.email === auth.currentUser.email}
-                          >
-                            <FaTrash className="me-1" /> Delete
-                          </button>
+                            <button
+                              className="btn btn-sm btn-outline-warning fw-bold"
+                              onClick={() => handleDeleteUser(u)}
+                              disabled={u.email === auth.currentUser.email}
+                            >
+                              <FaTrash className="me-1" /> Delete
+                            </button>
+                          </div>
                         </td>
+
                       </tr>
                     ))
                   ) : (
@@ -298,7 +306,7 @@ const UsersTable = ({ users, handleRoleChange }) => {
             <div className="row g-4 mt-2">
               {currentUsers.length > 0 ? (
                 currentUsers.map((u) => (
-                  <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={u.id}>
+                  <div className="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-4" key={u.id}>
                     <motion.div
                       className="card h-100 p-3 border-0 shadow-sm text-center d-flex flex-column justify-content-between"
                       style={{
@@ -384,33 +392,54 @@ const UsersTable = ({ users, handleRoleChange }) => {
                       </div>
 
                       {/* 🔘 Change Role Button */}
-                      <div className="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                      <div
+                        className="d-flex justify-content-center align-items-center flex-nowrap gap-3 mt-3"
+                        style={{ flexWrap: "wrap", rowGap: "8px" }}
+                      >
+                        {/* 🔁 Change Role Button */}
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.97 }}
-                          className={`btn btn-sm fw-semibold mt-3 ${u.roleId === 1
-                            ? "btn-outline-primary"
-                            : "btn-outline-danger"
+                          className={`btn btn-sm fw-semibold ${u.roleId === 1 ? "btn-outline-primary" : "btn-outline-danger"
                             }`}
                           style={{
                             borderRadius: "10px",
                             transition: "0.3s ease",
+                            padding: "6px 14px",
+                            minWidth: "120px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px",
+                            whiteSpace: "nowrap",
                           }}
                           onClick={() => handleRoleChange(u)}
-                          disabled={u.email === auth.currentUser.email}
                         >
-                          <i className="fa-solid fa-sync-alt me-2"></i> Change
-                          Role
+                          <i className="fa-solid fa-sync-alt"></i>
+                          <span>Change Role</span>
                         </motion.button>
 
-                        {/* 🆕 Delete Button */}
+                        {/* 🗑️ Delete Button */}
                         <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          className="btn btn-sm btn-outline-warning fw-semibold"
+                          whileHover={{ scale: 1.05, backgroundColor: "#ffc107", color: "#000" }}
+                          whileTap={{ scale: 0.97 }}
+                          className="btn btn-sm fw-semibold btn-outline-warning"
+                          style={{
+                            borderRadius: "10px",
+                            transition: "0.3s ease",
+                            padding: "6px 14px",
+                            minWidth: "120px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "6px",
+                            whiteSpace: "nowrap",
+                          }}
                           onClick={() => handleDeleteUser(u)}
                           disabled={u.email === auth.currentUser.email}
                         >
-                          <FaTrash className="me-1" /> Delete
+                          <FaTrash />
+                          <span>Delete</span>
                         </motion.button>
                       </div>
                     </motion.div>
