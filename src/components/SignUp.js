@@ -36,6 +36,7 @@ const SignUp = () => {
         name,
         phone,
         email,
+        roleId: 1, 
         isOnline: true,
       });
 

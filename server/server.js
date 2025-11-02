@@ -6,6 +6,10 @@ const cors = require("cors");
 const path = require("path"); // ✅ for serving frontend
 
 const app = express();
+// 🟢 Import deleteUser route
+const deleteUserRoute = require("./routes/deleteUser");
+app.use("/api", deleteUserRoute);
+
 app.use(cors());
 app.use(bodyParser.json());
 

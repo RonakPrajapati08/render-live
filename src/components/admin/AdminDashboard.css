@@ -1,0 +1,51 @@
+/* Smooth glowing button gradient */
+.btn-gradient {
+  background: linear-gradient(135deg, #007bff, #00bcd4);
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #0062cc, #00a0b3);
+  transform: scale(1.04);
+}
+
+/* Table styling */
+.table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: 0.2s;
+}
+
+.custom-dark-input::placeholder {
+  color: #aaa !important;  /* light gray for visibility */
+  opacity: 1;              /* ensures the color actually shows */
+}
+
+.custom-dark-input {
+  color: white;
+  caret-color: white;
+}
+
+.custom-dark-input:focus {
+  outline: none !important;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+  border-color: #0d6efd !important; /* blue focus border */
+}
+
+
+/* Responsive container */
+@media (max-width: 768px) {
+  .admin-users-section {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 1rem !important;
+  }
+
+  .table th,
+  .table td {
+    font-size: 0.9rem;
+  }
+}

@@ -1,69 +1,16 @@
 // App.js
-// import React from "react";
-// import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import LoginPage from "./components/LoginPage";
-// import SignUp from "./components/SignUp";
-// import ChatPage from "./components/ChatPage";
-// // import React, { useEffect } from "react";
-// // import { messaging, getToken, onMessage } from "./firebaseConfig";
-
-// function App() {
-//   // useEffect(() => {
-//   //   // Request notification permission
-//   //   Notification.requestPermission().then((permission) => {
-//   //     if (permission === "granted") {
-//   //       console.log("Notification permission granted.");
-
-//   //       // Get FCM token
-//   //       getToken(messaging, {
-//   //         vapidKey:
-//   //           "BBr4kY2lvVcjhWRxJREA-UfFP3HXReKDwcZdXZAtugLaTWmJh-NtUhYIpQioybwl3uR6iqxaTmiScWCfm8bzY1U",
-//   //       })
-//   //         .then((currentToken) => {
-//   //           if (currentToken) {
-//   //             console.log("FCM Token:", currentToken);
-//   //             // Send this token to your backend to save it for future notifications
-//   //           } else {
-//   //             console.log("No registration token available.");
-//   //           }
-//   //         })
-//   //         .catch((err) => {
-//   //           console.error("Error getting FCM token:", err);
-//   //         });
-//   //     } else {
-//   //       console.error("Notification permission denied.");
-//   //     }
-//   //   });
-
-//   //   // Handle foreground messages
-//   //   onMessage(messaging, (payload) => {
-//   //     console.log("Message received. ", payload);
-//   //     // Show notification or handle it in-app
-//   //     alert(`New message: ${payload.notification.body}`);
-//   //   });
-//   // }, []);
-
-//   return (
-//     <Router basename="/Chat-App">
-//       <Routes>
-//         <Route path="/" element={<LoginPage />} />
-//         <Route path="/SignUp" element={<SignUp />} />
-//         <Route path="/chat/:userId" element={<ChatPage />} />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
 // import React, { useEffect, useState } from "react";
 // import {
-//   BrowserRouter as Router,
+//   HashRouter as Router,
 //   Route,
 //   Routes,
 //   Navigate,
 // } from "react-router-dom";
-// import { auth } from "./firebaseConfig";
+// import {
+//   auth,
+//   requestNotificationPermission,
+//   listenForMessages,
+// } from "./firebaseConfig";
 // import LoginPage from "./components/LoginPage";
 // import SignUp from "./components/SignUp";
 // import ChatPage from "./components/ChatPage";
@@ -86,6 +33,13 @@
 //     return () => unsubscribe();
 //   }, []);
 
+//   useEffect(() => {
+//     if (user) {
+//       requestNotificationPermission(); // ask for notification permission
+//       listenForMessages(user.uid); // listen to Firestore for new messages
+//     }
+//   }, [user]);
+
 //   if (loading) {
 //     return (
 //       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -102,7 +56,7 @@
 //   }
 
 //   return (
-//     <Router basename="/Chat-App">
+//     <Router>
 //       <Routes>
 //         <Route
 //           path="/"
@@ -120,6 +74,7 @@
 
 // export default App;
 
+// src/app.js
 import React, { useEffect, useState } from "react";
 import {
   HashRouter as Router,
@@ -129,24 +84,45 @@ import {
 } from "react-router-dom";
 import {
   auth,
+  db,
   requestNotificationPermission,
   listenForMessages,
 } from "./firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 import LoginPage from "./components/LoginPage";
 import SignUp from "./components/SignUp";
 import ChatPage from "./components/ChatPage";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap
+import AdminDashboard from "./components/admin/AdminDashboard";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
+
+        // 🔹 Fetch user role from Firestore
+        try {
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userSnap = await getDoc(userDocRef);
+
+          if (userSnap.exists()) {
+            const data = userSnap.data();
+            setRole(data.roleId || 2); // default normal user
+          } else {
+            setRole(2);
+          }
+        } catch (err) {
+          console.error("Error fetching user role:", err);
+          setRole(2);
+        }
       } else {
         setUser(null);
+        setRole(null);
       }
       setLoading(false);
     });
@@ -156,37 +132,41 @@ function App() {
 
   useEffect(() => {
     if (user) {
-      requestNotificationPermission(); // ask for notification permission
-      listenForMessages(user.uid); // listen to Firestore for new messages
+      requestNotificationPermission();
+      listenForMessages(user.uid);
     }
   }, [user]);
 
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="typing-indicator">
-          <div className="typing-circle"></div>
-          <div className="typing-circle"></div>
-          <div className="typing-circle"></div>
-          <div className="typing-shadow"></div>
-          <div className="typing-shadow"></div>
-          <div className="typing-shadow"></div>
-        </div>
+        <div className="spinner-border text-primary" role="status"></div>
       </div>
     );
   }
 
+  // ✅ Handle redirects properly
+  const HomeRedirect = () => {
+    if (!user) return <LoginPage />;
+    if (role === 1) return <Navigate to="/admin-dashboard" replace />;
+    if (role === 2) return <Navigate to={`/chat/${user.uid}`} replace />;
+    return <LoginPage />;
+  };
+
   return (
     <Router>
       <Routes>
-        <Route
-          path="/"
-          element={user ? <Navigate to={`/chat/${user.uid}`} /> : <LoginPage />}
-        />
+        <Route path="/" element={<HomeRedirect />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route
           path="/chat/:userId"
-          element={user ? <ChatPage /> : <Navigate to="/" />}
+          element={user && role === 2 ? <ChatPage /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            user && role === 1 ? <AdminDashboard /> : <Navigate to="/" />
+          }
         />
       </Routes>
     </Router>
@@ -195,50 +175,4 @@ function App() {
 
 export default App;
 
-// import React from "react";
-// import {
-//   BrowserRouter as Router,
-//   Route,
-//   Routes,
-//   Navigate,
-// } from "react-router-dom";
-// import LoginPage from "./components/LoginPage";
-// import SignUp from "./components/SignUp";
-// import ChatPage from "./components/ChatPage";
 
-// function App() {
-//   return (
-//     <Router basename="/Chat-App">
-//       <Routes>
-//         <Route path="/" element={<LoginPage />} />
-//         <Route path="/signup" element={<SignUp />} />
-//         <Route path="/chat" element={<ChatPage />} />
-//         <Route path="*" element={<Navigate to="/" replace />} />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
-
-// import React, { useState } from "react";
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import LoginPage from "./components/LoginPage";
-// import SignUp from "./components/SignUp";
-// import ChatPage from "./components/ChatPage";
-
-// function App() {
-//   const [chatUser, setChatUser] = useState(null); // State to track the logged-in user
-
-//   return (
-//     <Router>
-//       <Routes>
-//         <Route path="/" element={<LoginPage setChatUser={setChatUser} />} />
-//         {/* <Route path="/signup" element={<SignUp />} /> */}
-//         <Route path="/chat" element={<ChatPage chatUser={chatUser} />} />
-//       </Routes>
-//     </Router>
-//   );
-// }
-
-// export default App;
